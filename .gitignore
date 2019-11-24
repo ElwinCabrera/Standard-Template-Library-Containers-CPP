@@ -1,1 +1,5 @@
+#Visual Studio stuff
 .vscode/
+
+# Custom script(s) python to make life easier
+*.py
