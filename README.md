@@ -39,6 +39,14 @@ When using this resource it is best to start with going over some core concepts 
 ## Contents
 
 ### Concepts
+- [ ] [Big O]() 
+- [ ] [Recursion]()
+- [ ] [Dynamic Programming]()
+- [ ] [Bit Manipulation]()
+- [ ] [P vs NP]()
+- [ ] [Concurrency]()
+- [ ] [Hill Climbing]()
+- [ ] [Simulated annealing]()
 
 ### Data Structures
 - [ ] [Arrays and Strings]()
@@ -48,6 +56,7 @@ When using this resource it is best to start with going over some core concepts 
 - [ ] [Graphs]()
 - [ ] [Trees and Tries]()
 - [ ] [Hash Tables]()
+- [ ] [Heap]()
 
 ### Algorithms
 
