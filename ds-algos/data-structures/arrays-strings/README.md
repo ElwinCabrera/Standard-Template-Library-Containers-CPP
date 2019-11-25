@@ -16,7 +16,7 @@ Inserting elements to an array at the end of the array is O(1) time. However, in
 
 ### Deleting
 
-The runtime for deleteing elements from an array is similar to that of inserting elements. If you delete an element form the end of the array it will cost you O(1) time. However, deleting elements from any point other than the end will cost you O(n) time since you would have to move all elements to the left by one position to keep the continuous property of an array (arrays need to be continuous so that it can be indexed an have O(1) access time).
+The runtime for deleting elements from an array is similar to that of inserting elements. If you delete an element form the end of the array it will cost you O(1) time. However, deleting elements from any point other than the end will cost you O(n) time since you would have to move all elements to the left by one position to keep the continuous property of an array (arrays need to be continuous so that it can be indexed an have O(1) access time).
 
 ### Access
 
@@ -24,7 +24,7 @@ Since arrays are continuous access time for any array is always O(1) and you can
 
 ## Space Complexity
 
-Arrays start with a fixed size in the beggining so the space complexity would be O(n) where n is the initial size of the array.
+Arrays start with a fixed size in the beginning so the space complexity would be O(n) where n is the initial size of the array.
 
 ## Resizable Arrays
 

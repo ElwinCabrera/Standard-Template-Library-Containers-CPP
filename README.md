@@ -40,6 +40,7 @@ When using this resource it is best to start with going over some core concepts 
 
 ### Concepts
 - [ ] [Big O]() 
+- [ ] [Memory(stack vs heap)]()
 - [ ] [Recursion]()
 - [ ] [Dynamic Programming]()
 - [ ] [Bit Manipulation]()
@@ -72,10 +73,10 @@ When using this resource it is best to start with going over some core concepts 
 #### Searching 
 - [ ] [Linear Search]()
 - [ ] [Binary Search]()
-
-#### Every other algorithm 
 - [ ] [Breath First Search (BFS)]()
 - [ ] [Depth First Search (DFS)]() 
+
+#### Every other algorithm 
 - [ ] [Shortest Path in Maze (Lee algorithm)]()
 - [ ] [Flood Fill]()
 - [ ] [Prorder Traversal]()
@@ -91,4 +92,4 @@ When using this resource it is best to start with going over some core concepts 
 
 
 ## Licence 
-    
+
