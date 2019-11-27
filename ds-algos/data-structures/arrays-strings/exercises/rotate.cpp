@@ -141,7 +141,13 @@ void reverseList(int start, int end, vector<int> &nums){
 
 
 /*
-Another  better way to do this is to 
+Another  optimal solution  using cyclic replacement.
+
+We can directly place every number of the array at its required correct position. But if we do that, we will destroy the original element. 
+Thus, we need to store the number being replaced in a temp variable. Then, we can place the replaced number(temp) at its correct position and so on, n times, where n is the length of array. 
+But, there could be a problem with this method, if n where where k=k (since a value of k larger than n eventually leads to a k equivalent to k). 
+In this case, while picking up numbers to be placed at the correct position, we will eventually reach the number from which we originally started. Thus, in such a case, when we hit the original number's index again, we start the same process with the number following it.
+
 Run time: O(n)
 Space: O(1)
 */
