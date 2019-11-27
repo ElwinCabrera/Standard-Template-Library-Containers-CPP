@@ -2,7 +2,7 @@
 
 ## Arrays
 
-Arrays are one of the most basic and simplest data structure in computer science. An array stores a fixed size collection of elements of the same data type. In memory arrays are usually continuos so that each element can easily be identified by an array index.
+Arrays are one of the most basic and simplest data structure in computer science. An array stores a fixed size collection of elements of the same data type. In memory arrays are usually continuos so that each element can easily be identified by an array index. Also note that there does exist multidimensional arrays but the array types discussed here are linear of single dimension.
 
 ## Strings
 
