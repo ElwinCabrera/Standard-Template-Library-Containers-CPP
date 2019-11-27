@@ -1,4 +1,7 @@
 /*
+
+Original problem from: https://leetcode.com/problems/rotate-array
+
 Given an array, rotate the array to the right by k steps, where k is non-negative.
 
 Example 1:
@@ -108,7 +111,7 @@ void rotate3(vector<int>& nums, int k) {
 
 
 /*
-One of the beeter way to do this is to reverse the whole list. Then to reverse all elements form the beginning up until the pivot point -1. Then to reverse all elements 
+One of the better way to do this is to reverse the whole list. Then to reverse all elements form the beginning up until the pivot point -1. Then to reverse all elements 
 from the pivot point up until the end of the list. This works because when we rotate a list all elements to the left to the pivot point are placed to the right and all elements to the
 right of the pivot point are placed to the left.
 
@@ -138,7 +141,7 @@ void reverseList(int start, int end, vector<int> &nums){
 
 
 /*
-Another  beeter way to do this is to...
+Another  better way to do this is to 
 Run time: O(n)
 Space: O(1)
 */

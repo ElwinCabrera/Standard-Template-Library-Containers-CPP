@@ -92,7 +92,8 @@ void moveZeroes3(vector<int>& nums){
 
 
 /*
-This solution builds on top of the last solution. Since we loop through the array keeping track of the next available slot for each non-zero number
+This solution builds on top of the last solution. Since we loop through the array keeping track of the next available slot (starting from 0) for each non-zero number we can just 
+loop through the array swapping the current index with the next available spot (updating the next available slot of course).
 
 Runtime: O(n), where n is the number of total elements in the original array.
 Space: O(1), no extra space is used.
