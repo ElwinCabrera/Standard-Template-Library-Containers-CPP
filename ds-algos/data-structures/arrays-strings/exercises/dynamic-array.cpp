@@ -1,5 +1,7 @@
 /*
 
+Original : https://www.hackerrank.com/challenges/dynamic-array/problem
+
 *Create a list, seqList, of N empty sequences, where each sequence is indexed from 0 to N-1. The elements within each of the sequences also use 0 indexing.
 *Create an integer, lastAnswer, and initialize it to 0.
 The 2 types of queries that can be performed on your list of sequences (seqList) are described below:
