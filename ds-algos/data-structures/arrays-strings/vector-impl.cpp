@@ -13,7 +13,8 @@ front, back 	O(1)
 */
 #include <stdexcept>
 #include <iostream>
-#include<string.h>
+#include <string.h>
+#include <algorithm>
 using std::cout;
 using std::endl;
 
@@ -56,7 +57,9 @@ public:
     void shrink_to_fit();
 
     T& operator[](unsigned int idx);//
+    T& operator[](unsigned int idx) const;//
     T& at(unsigned int idx);//
+    T& at(unsigned int idx) const;//
     T& front() const;//
     T& back() const;//
     T* data() const;
@@ -81,42 +84,53 @@ public:
 /** Constructors and Destructors **/
 template<typename T>
 CustomVector<T>::CustomVector(){
+    cout << "In Constructor #1"<<"\n";
     currCapacity = 0;
     vectSize = 0;
     vectArray = nullptr;
-    cout << "In Constructor #1"<<"\n";
 }
 
 template<typename T>
 CustomVector<T>::CustomVector(unsigned int size){
     cout << "In Constructor #2"<<"\n";
+    vectArray = nullptr;
+    this->vectSize = size;
     reserve(size);
 }
 
 template<typename T>
 CustomVector<T>::CustomVector(unsigned int size, const T &item){
+    
     cout << "In Constructor #3"<<"\n";
+    this->vectArray = nullptr;
     reserve(size);
-    vectSize = size;
+    this->vectSize = size;
     for(unsigned int i = 0; i < size; i++) memcpy(vectArray, &item, sizeof(item));
 }
 
 template<typename T>
-CustomVector<T>::CustomVector( const CustomVector<T> &v){
+CustomVector<T>::CustomVector( const CustomVector<T> &other){
     cout << "In Copy Constructor #4"<<"\n";
-    reserve(v.size());
-    for(unsigned int i = 0; i < v.size(); i++) vectArray[i] = v[i];
+    this->vectArray = nullptr;
+    reserve(other.size());
+    vectSize = other.size();
+    for(unsigned int i = 0; i < other.size(); i++) vectArray[i] = other.vectArray[i];
 }
 
 template<typename T>
 CustomVector<T>::CustomVector(CustomVector<T> &&other) noexcept {
     cout << "In Move Constructor #5"<<"\n";
+    vectArray = other->vectArray;
+    other->vectArray = nullptr;
 }
 
 template<typename T>
 CustomVector<T>::~CustomVector(){
     cout << "In Custom Vector Destructor "<<"\n";
-    if(vectArray != nullptr) delete[] vectArray;
+    if(vectArray != nullptr) {
+        delete[] vectArray;
+        vectArray = nullptr;
+    }
 }
 
 template<typename T>
@@ -233,9 +247,25 @@ T& CustomVector<T>::operator[] (unsigned int idx){
     //cout << "In operator[] (...)"<<"\n";
     return vectArray[idx];
 }
+template <typename T>
+T& CustomVector<T>::operator[] (unsigned int idx) const{
+    //cout << "In operator[] (...)"<<"\n";
+    return vectArray[idx];
+}
 
 template <typename T>
 T& CustomVector<T>::at(unsigned int idx){
+    //cout << "In at(...)"<<"\n";
+    try{
+        return vectArray[idx];
+    } catch(const std::out_of_range& oor){
+        std::cerr << "Out of Range error: " << oor.what() << "\n";
+    }
+    
+}
+
+template <typename T>
+T& CustomVector<T>::at(unsigned int idx) const{
     //cout << "In at(...)"<<"\n";
     try{
         return vectArray[idx];
@@ -269,6 +299,7 @@ template<typename T>
 void CustomVector<T>::clear(){
     cout << "In clear()"<<"\n";
     delete[] vectArray;
+    vectArray = nullptr;
     currCapacity = 0;
     vectSize = 0;
 }
@@ -342,8 +373,9 @@ template<typename T>
 void CustomVector<T>::swap(CustomVector<T> &otherV){
     cout << "In swap(...)"<<"\n";
     using std::swap;
-
-    swap(vectArray, otherV.vectArray);
+    unsigned int i = otherV.size();
+    swap(this->vectSize, i);
+    swap(this->vectArray, otherV.vectArray);
 }
 
 
@@ -357,7 +389,7 @@ void CustomVector<T>::swap(CustomVector<T> &otherV){
 
 
 template <typename T>
-void printVect(CustomVector<T> &vect){
+void printVect(const CustomVector<T> &vect){
     cout << "PRINTING VECTOR...\n";
     cout << "\t[";
     for(int i = 0 ; i< vect.size(); i++){
@@ -371,52 +403,40 @@ int main(int argc, char **argv){
     myVect0.push_back(1);
     myVect0.push_back(2);
     myVect0.push_back(3);
+    //printVect(myVect0);
+    myVect0.pop_back();
+    //printVect(myVect0);
+    myVect0.push_front(5);
     printVect(myVect0);
+    cout << "empty vect0?:"<<myVect0.empty()<<"\n";
     cout << "DONE: Creating 'myVect0' with constructor 'CustomVector()'\n";
-    
-    CustomVector<int> myVect1(4,0);
-    printVect(myVect1);
-    cout << "DONE: Creating 'myVect1' with constructor 'CustomVector(unsigned int cap)'\n";
 
-    //CustomVector<int> myVect2(3,0);
-    //printVect(myVect2);
-    //cout << "DONE: Creating 'myVect2' with constructor 'CustomVector(unsigned int cap, T &value)'\n";
+    CustomVector<int> myVect2(3,0);
+    myVect2 = myVect0;
+    printVect(myVect2);
+    printVect(myVect0);
+    cout << "empty vect0?:"<<myVect0.empty()<<"\n";
+    myVect0.resize(10);
+    myVect0.at(9) = 700;
+    printVect(myVect0);
+    cout << "DONE: Creating 'myVect2' with constructor 'CustomVector(unsigned int cap, T &value)'\n";
 
 }
 
 
-    /*CustomVector(); // -- DONE
+    /*
     CustomVector(unsigned int size); // -- DONE
-    CustomVector(unsigned int size, const T &type); // -- DONE
-    CustomVector(const CustomVector<T> &v); // -- DONE
-    ~CustomVector(); // -- DONE
-    CustomVector<T>& operator=(const CustomVector<T> &v); // -- DONE
 
     iterator begin(); // -- DONE
     iterator end(); // -- DONE
 
-    unsigned int size() const; // -- DONE
-    unsigned int max_size() const; // -- DONE
-    void resize();// -- DONE
-    unsigned int capacity() const; // -- DONE
-    bool empty() const; // -- DONE
-    void reserve(unsigned int cap);// -- DONE
     void shrink_to_fit();
 
-    T& operator[](unsigned int idx); // -- DONE
-    T& at(unsigned int idx); // -- DONE
-    T& front() const; // -- DONE
-    T& back() const; // -- DONE
     T* data() const;
 
     void assign(unsigned int count, const T &value);
-    void push_back(const T &item); // -- DONE
-    void push_front(const T &item); // -- DONE
-    void pop_back();// -- DONE
+
     void insert(unsigned int pos, const T &item);
     void erase(iterator pos);
     void erase(iterator first, iterator last);
-    void resize(unsigned int size);// -- DONE
-    void swap(CustomVector<T> &otherV); // -- DONE
-    void clear(); // -- DONE
     */
