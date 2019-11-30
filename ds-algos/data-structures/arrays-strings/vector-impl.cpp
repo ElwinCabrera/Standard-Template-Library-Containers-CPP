@@ -376,7 +376,6 @@ int main(int argc, char **argv){
     
     CustomVector<int> myVect1(4,0);
     printVect(myVect1);
-    myVect1[50]= 5;
     cout << "DONE: Creating 'myVect1' with constructor 'CustomVector(unsigned int cap)'\n";
 
     //CustomVector<int> myVect2(3,0);
