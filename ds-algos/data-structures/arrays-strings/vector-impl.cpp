@@ -15,6 +15,7 @@ front, back 	O(1)
 #include <iostream>
 #include <string.h>
 #include <algorithm>
+#include <string>
 using std::cout;
 using std::endl;
 
@@ -102,7 +103,7 @@ template<typename T>
 CustomVector<T>::CustomVector(unsigned int size, const T &item){
     
     cout << "In Constructor #3"<<"\n";
-    this->vectArray = nullptr;
+    if(this->vectArray != nullptr) this->vectArray = nullptr;
     reserve(size);
     this->vectSize = size;
     for(unsigned int i = 0; i < size; i++) memcpy(vectArray, &item, sizeof(item));
@@ -238,6 +239,8 @@ unsigned int CustomVector<T>::capacity() const {
 template<typename T>
 void CustomVector<T>::shrink_to_fit(){
     cout << "In shrink_to_fit()"<<"\n";
+    currCapacity = vectSize;
+
 }
 
 
@@ -298,15 +301,17 @@ T* CustomVector<T>::data() const{
 template<typename T>
 void CustomVector<T>::clear(){
     cout << "In clear()"<<"\n";
-    delete[] vectArray;
+    if(vectArray != nullptr) delete[] vectArray;
     vectArray = nullptr;
-    currCapacity = 0;
     vectSize = 0;
 }
 
 template<typename T>
 void CustomVector<T>::assign(unsigned int count, const T &item){
     cout << "In assign(...)"<<"\n";
+    resize(count);
+    this->vectSize = count;
+    for(int i = 0; i < count; i++) this->at(i) = item;
 }
 
 template<typename T>
@@ -389,8 +394,8 @@ void CustomVector<T>::swap(CustomVector<T> &otherV){
 
 
 template <typename T>
-void printVect(const CustomVector<T> &vect){
-    cout << "PRINTING VECTOR...\n";
+void printVect(const std::string &msg, const CustomVector<T> &vect){
+    cout << msg<<"\n" ;
     cout << "\t[";
     for(int i = 0 ; i< vect.size(); i++){
         cout << vect.at(i) <<",";
@@ -399,44 +404,20 @@ void printVect(const CustomVector<T> &vect){
 }
 
 int main(int argc, char **argv){
-    CustomVector<int> myVect0;
-    myVect0.push_back(1);
-    myVect0.push_back(2);
-    myVect0.push_back(3);
-    //printVect(myVect0);
-    myVect0.pop_back();
-    //printVect(myVect0);
-    myVect0.push_front(5);
-    printVect(myVect0);
-    cout << "empty vect0?:"<<myVect0.empty()<<"\n";
+    CustomVector<int> myVect0(10,701);
+    printVect("PRINTING myVect0",myVect0);
     cout << "DONE: Creating 'myVect0' with constructor 'CustomVector()'\n";
 
-    CustomVector<int> myVect2(3,0);
-    myVect2 = myVect0;
-    printVect(myVect2);
-    printVect(myVect0);
-    cout << "empty vect0?:"<<myVect0.empty()<<"\n";
-    myVect0.resize(10);
-    myVect0.at(9) = 700;
-    printVect(myVect0);
-    cout << "DONE: Creating 'myVect2' with constructor 'CustomVector(unsigned int cap, T &value)'\n";
-
-}
 
 
     /*
-    CustomVector(unsigned int size); // -- DONE
 
     iterator begin(); // -- DONE
     iterator end(); // -- DONE
-
-    void shrink_to_fit();
-
-    T* data() const;
-
-    void assign(unsigned int count, const T &value);
 
     void insert(unsigned int pos, const T &item);
     void erase(iterator pos);
     void erase(iterator first, iterator last);
     */
+
+}
