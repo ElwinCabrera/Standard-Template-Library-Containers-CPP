@@ -25,7 +25,7 @@ private:
 
     T *vectArray;
 public:
-    typedef typename T *iterator;
+    typedef  T *iterator;
     CustomVector();//
     CustomVector(unsigned int size);//
     CustomVector(unsigned int size, const T &type);//
@@ -80,6 +80,7 @@ template<typename T>
 CustomVector<T>::CustomVector(){
     currCapacity = 0;
     vectSize = 0;
+    vectArray = nullptr;
     cout << "In Constructor #1"<<"\n";
 }
 
@@ -97,15 +98,20 @@ CustomVector<T>::CustomVector(unsigned int size, const T &item){
 }
 
 template<typename T>
-CustomVector<T>::CustomVector(const CustomVector<T> &v){
+CustomVector<T>::CustomVector( const CustomVector<T> &v){
     reserve(v.size());
-    for(int i = 0; i < vectSize; i++) vectArray[i] = v[i];
-    cout << "In Constructor #4"<<"\n";
+    for(int i = 0; i < v.size(); i++) vectArray[i] = v[i];
+    cout << "In Copy Constructor #4"<<"\n";
+}
+
+template<typename T>
+CustomVector<T>::CustomVector(CustomVector<T> &&other) noexcept {
+    cout << "In Move Constructor #5"<<"\n";
 }
 
 template<typename T>
 CustomVector<T>::~CustomVector(){
-    delete[] vectArray;
+    if(vectArray != nullptr) delete[] vectArray;
     cout << "In Destructor "<<"\n";
 }
 
@@ -120,13 +126,13 @@ CustomVector<T>& CustomVector<T>::operator=(const CustomVector<T> &v){
 
 /** Iterators **/
 template<typename T>
-CustomVector<T>::iterator CustomVector<T>::begin(){
+typename CustomVector<T>::iterator CustomVector<T>::begin(){
     cout << "In begin()"<<"\n";
     return vectArray;
 }
 
 template<typename T>
-CustomVector<T>::iterator CustomVector<T>::end(){
+typename CustomVector<T>::iterator CustomVector<T>::end(){
     cout << "In end()"<<"\n";
     return vectArray + size();
 }
@@ -185,13 +191,17 @@ bool CustomVector<T>::empty() const {
 template<typename T> 
 void CustomVector<T>::reserve(unsigned int cap){
     cout << "In reserve(..)"<<"\n";
+    T *newArr;
+    try{
+        newArr = new T[(sizeof(T)* cap)];
+    } catch (const std::bad_alloc& ba){
+        cout << "CustomVector reserve(): memory allocation failure: " << ba.what()<<"\n";
+    }
 
-    T *newArr = new T[cap];
-    if(newArr == nullptr) throw memoryAllocationError("CustomVector reserve(): memory allocation failure");
-
-    for(unsigned int i =0; i< vectSize; i++ ) newArr[i] = vectArray[i];
-    
-    if(vectArray != nullptr) delete[] vectArray;
+    if(vectArray != nullptr) {
+        for(unsigned int i =0; i< vectSize; i++ ) newArr[i] = vectArray[i];
+        delete[] vectArray;
+    }
     vectArray = newArr;
     currCapacity = cap; 
 }
@@ -327,17 +337,77 @@ void CustomVector<T>::swap(CustomVector<T> &otherV){
     vectArray = tmp;
 }
 
+
+
+
+
+
+
+
+
+
+
 template <typename T>
-void printVect(CustomVector<T> vect){
+void printVect(CustomVector<T> &vect){
     cout << "PRINTING VECTOR...\n";
     cout << "\t[";
-    for(T item: vect){
-        cout << item <<",";
+    for(int i = 0 ; i< vect.size(); i++){
+        cout << vect[i] <<",";
     }
     cout << "]\n";
 }
 
 int main(int argc, char **argv){
-    CustomVector<int> myVect;
+    CustomVector<int> myVect0;
+    myVect0.push_back(1);
+    myVect0.push_back(2);
+    myVect0.push_back(3);
+    //printVect(myVect0);
+    cout << "DONE: Creating 'myVect0' with constructor 'CustomVector()'\n";
     
+    //CustomVector<int> myVect1(3);
+    //printVect(myVect1);
+   // cout << "DONE: Creating 'myVect1' with constructor 'CustomVector(unsigned int cap)'\n";
+
+    //CustomVector<int> myVect2(3,0);
+    //printVect(myVect2);
+    //cout << "DONE: Creating 'myVect2' with constructor 'CustomVector(unsigned int cap, T &value)'\n";
+
 }
+
+
+    /*CustomVector(); // -- DONE
+    CustomVector(unsigned int size); // -- DONE
+    CustomVector(unsigned int size, const T &type); // -- DONE
+    CustomVector(const CustomVector<T> &v); // -- DONE
+    ~CustomVector(); // -- DONE
+    CustomVector<T>& operator=(const CustomVector<T> &v); // -- DONE
+
+    iterator begin(); // -- DONE
+    iterator end(); // -- DONE
+
+    unsigned int size() const; // -- DONE
+    unsigned int max_size() const; // -- DONE
+    void resize();// -- DONE
+    unsigned int capacity() const; // -- DONE
+    bool empty() const; // -- DONE
+    void reserve(unsigned int cap);// -- DONE
+    void shrink_to_fit();
+
+    T& operator[](unsigned int idx); // -- DONE
+    T& at(unsigned int idx); // -- DONE
+    T& front() const; // -- DONE
+    T& back() const; // -- DONE
+    T* data() const;
+
+    void assign(unsigned int count, const T &value);
+    void push_back(const T &item); // -- DONE
+    void push_front(const T &item); // -- DONE
+    void pop_back();// -- DONE
+    void insert(unsigned int pos, const T &item);
+    void erase(iterator pos);
+    void erase(iterator first, iterator last);
+    void resize(unsigned int size);// -- DONE
+    void swap(CustomVector<T> &otherV); // -- DONE
+    void clear(); // -- DONE
+    */
