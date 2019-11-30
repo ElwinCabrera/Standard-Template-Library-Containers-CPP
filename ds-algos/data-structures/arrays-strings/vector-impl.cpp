@@ -30,8 +30,10 @@ public:
     CustomVector(unsigned int size);//
     CustomVector(unsigned int size, const T &type);//
     CustomVector(const CustomVector<T> &v);//
+    CustomVector(CustomVector<T> &&other) noexcept ;
     ~CustomVector();//
     CustomVector<T>& operator=(const CustomVector<T> &v);//
+    CustomVector<T>& operator=(CustomVector<T> &&other);
 
     iterator begin();//
     iterator end();//
@@ -116,14 +118,17 @@ CustomVector<T>::~CustomVector(){
 }
 
 template<typename T>
-CustomVector<T>& CustomVector<T>::operator=(const CustomVector<T> &v){
+CustomVector<T>& CustomVector<T>::operator=(const CustomVector<T> &other){
     cout << "In operator= (...)"<<"\n";
-    resize(v.size());
-    for(int i = 0; i< vectSize; i++) vectArray[i] = v[i];
+    CustomVector<T> tmpCpy(other);
+    tmpCpy.swap(*this);
     return *this;
 }
+template<typename T>
+CustomVector<T>& CustomVector<T>::operator=(CustomVector<T> &&other){
 
-
+}
+ 
 /** Iterators **/
 template<typename T>
 typename CustomVector<T>::iterator CustomVector<T>::begin(){
@@ -327,6 +332,14 @@ void CustomVector<T>::resize(unsigned int size)  {
     vectArray = newArr;
     currCapacity = size;
     vectSize = size;
+}
+
+template<typename T>
+void CustomVector<T>::swap(CustomVector<T> &otherV){
+    cout << "In swap(...)"<<"\n";
+    using std::swap;
+
+    swap(vectArray, otherV.vectArray);
 }
 
 template<typename T>
