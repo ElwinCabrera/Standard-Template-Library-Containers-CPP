@@ -361,6 +361,19 @@ void CustomVector<T>::erase(CustomVector<T>::iterator it){
 template<typename T>
 void CustomVector<T>::erase(CustomVector<T>::iterator first, CustomVector<T>::iterator last){
     cout << "In erase(...) #2"<<"\n";
+    int count = 0;
+    for(auto it = first; it < last; it++){
+        ++count;
+        it->~T();
+    }
+    auto it = first;
+    auto it2 = last; 
+    while(it2 < end()){
+        *it++ = *it2++;
+        it2->~T();
+    }
+    vectSize = vectSize - count;
+
 } 
 
 template<typename T>
@@ -433,14 +446,9 @@ void printVect(const std::string &msg, const CustomVector<T> &vect){
 
 int main(int argc, char **argv){
     CustomVector<int> myVect0;
-    //for(int i = 0; i< 11; i++) myVect0.push_back(i*5 + 20 %3);
-    printVect("Printing 'myVect0'...",myVect0);
+    for(int i = 0; i< 11; i++) myVect0.push_back(i*5 + 20 %3);
+    printVect("Printing 'myVect0'",myVect0);
+    myVect0.erase(myVect0.begin()+1,myVect0.begin()+4);
+    printVect("Printing 'myVect0'",myVect0);
     cout << "DONE: Creating 'myVect0' with constructor 'CustomVector()'\n";
-
-
-
-    /*
-    void erase(iterator first, iterator last);
-    */
-
 }
