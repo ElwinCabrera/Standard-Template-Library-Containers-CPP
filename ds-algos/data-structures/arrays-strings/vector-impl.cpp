@@ -107,7 +107,7 @@ CustomVector<T>::CustomVector(unsigned int size, const T &item){
     if(this->vectArray != nullptr) this->vectArray = nullptr;
     reserve(size);
     this->vectSize = size;
-    for(unsigned int i = 0; i < size; i++) memcpy(vectArray, &item, sizeof(item));
+    for(unsigned int i = 0; i < size; i++) memcpy(vectArray+i, &item, sizeof(item));
 }
 
 template<typename T>
@@ -417,7 +417,7 @@ int main(int argc, char **argv){
     for(int i = 0; i< 9; i++) myVect0.push_back(i*5 + 20 %3);
     printVect("PRINTING myVect0",myVect0);
     CustomVector<int>::iterator it = myVect0.begin();
-    myVect0.insert(myVect0.end(), 707);
+    myVect0.insert(it +2, 707);
     printVect("PRINTING myVect0",myVect0);
     cout << "DONE: Creating 'myVect0' with constructor 'CustomVector()'\n";
 
@@ -427,10 +427,6 @@ int main(int argc, char **argv){
 
 
     /*
-
-    iterator begin(); // -- DONE
-    iterator end(); // -- DONE
-
     void erase(iterator pos);
     void erase(iterator first, iterator last);
     */
