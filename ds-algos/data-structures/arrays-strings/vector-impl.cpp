@@ -433,19 +433,8 @@ void printVect(const std::string &msg, const CustomVector<T> &vect){
 
 int main(int argc, char **argv){
     CustomVector<int> myVect0;
-    for(int i = 0; i< 11; i++) myVect0.push_back(i*5 + 20 %3);
-    //for(int i = 0; i< 11; i++) myVect0.push_back(Tst());
-    printVect("PRINTING myVect0",myVect0);
-    CustomVector<int>::iterator it = myVect0.begin();
-    //myVect0.insert(it +2, 707);
-    myVect0.erase(it +2);
-    printVect("PRINTING myVect0",myVect0);
-    myVect0.pop_back();
-    printVect("PRINTING myVect0",myVect0);
-    myVect0.shrink_to_fit();
-    printVect("PRINTING myVect0",myVect0);
-    myVect0.emplace_back(707);
-    printVect("PRINTING myVect0",myVect0);
+    //for(int i = 0; i< 11; i++) myVect0.push_back(i*5 + 20 %3);
+    printVect("Printing 'myVect0'...",myVect0);
     cout << "DONE: Creating 'myVect0' with constructor 'CustomVector()'\n";
 
 
