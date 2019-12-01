@@ -3,3 +3,7 @@
 
 # Custom script(s) python to make life easier
 *.py
+
+# Cpp output stuff
+*.out
+*.o
