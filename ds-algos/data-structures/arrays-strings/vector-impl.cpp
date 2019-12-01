@@ -1,16 +1,39 @@
 
 /*
-Operation 	    Speed
-vector() 	    O(1)
-vector(n, x) 	O(n)
-size() 	        O(1)
-v[ i ] 	        O(1)
-push_back(x) 	O(1)
-pop_back 	    O(1)
-insert 	        O(size())
-erase 	        O(size())
-front, back 	O(1)
+Operation 	                                           Speed
+
+CustomVector();                                         O(1)
+CustomVector(unsigned int size)                         O(size)
+CustomVector(unsigned int size, const T &type)          O(size)
+CustomVector(const CustomVector<T> &v)                  O(v.size())
+CustomVector(CustomVector<T> &&other)                   O(1)
+~CustomVector()                                         O(capacity)
+begin()                                                 O(1)
+end()                                                   O(1)
+size()                                                  O(1)
+max_size()                                              O(1)
+capacity()                                              O(1)
+empty()                                                 O(1)
+reserve(unsigned int cap)                               O(cap)    
+shrink_to_fit();                                        O(cap - size)    
+operator[](unsigned int idx)                            O(1) - Amertized
+at(unsigned int idx)                                    O(1) - Amertized
+front()                                                 O(1) 
+back()                                                  O(1)
+data()                                                  O(1)
+assign(unsigned int count, const T &value)              O(count)
+push_back(const T &item)                                O(1)
+push_front(const T &item)                               O(size)
+pop_back()                                              O(1)
+insert(iterator it, const T &item)                      O(size - it)
+erase(iterator pos)                                     O(size - pos)
+erase(iterator first, iterator last)                    O(size - first)
+resize(unsigned int size)                               O(size)    
+swap(CustomVector<T> &otherV)                           O(1)
+clear()                                                 O(size)
 */
+
+
 #include <stdexcept>
 #include <iostream>
 #include <string.h>
@@ -29,17 +52,17 @@ private:
     T *buffer;
 public:
     typedef  T *iterator;
-    CustomVector();//
-    CustomVector(unsigned int size);//
-    CustomVector(unsigned int size, const T &type);//
-    CustomVector(const CustomVector<T> &v);//
+    CustomVector();
+    CustomVector(unsigned int size);
+    CustomVector(unsigned int size, const T &type);
+    CustomVector(const CustomVector<T> &v);
     CustomVector(CustomVector<T> &&other) noexcept ;
-    ~CustomVector();//
-    CustomVector<T>& operator=(const CustomVector<T> &v);//
+    ~CustomVector();
+    CustomVector<T>& operator=(const CustomVector<T> &v);
     CustomVector<T>& operator=(CustomVector<T> &&other);
 
-    iterator begin();//
-    iterator end();//
+    iterator begin();
+    iterator end();
     /*iterator rbegin();
     iterator rend();
     iterator cbegin() const;
@@ -49,33 +72,32 @@ public:
 
 
     
-    unsigned int size() const;//
-    unsigned int max_size() const;//
-    void resize();//
-    unsigned int capacity() const;//
-    bool empty() const;//
-    void reserve(unsigned int cap);//
+    unsigned int size() const;
+    unsigned int max_size() const;
+    unsigned int capacity() const;
+    bool empty() const;
+    void reserve(unsigned int cap);
     void shrink_to_fit();
 
-    T& operator[](unsigned int idx);//
-    T& operator[](unsigned int idx) const;//
-    T& at(unsigned int idx);//
-    T& at(unsigned int idx) const;//
-    T& front() const;//
-    T& back() const;//
+    T& operator[](unsigned int idx);
+    T& operator[](unsigned int idx) const;
+    T& at(unsigned int idx);
+    T& at(unsigned int idx) const;
+    T& front() const;
+    T& back() const;
     T* data() const;
 
     void assign(unsigned int count, const T &value);
-    void push_back(const T &item);//
-    void push_front(const T &item);//
-    void pop_back();//
+    void push_back(const T &item);
+    void push_front(const T &item);
+    void pop_back();
     void insert(iterator it, const T &item);
     void insert(unsigned int pos, const T &item);
-    void erase(iterator pos);//
+    void erase(iterator pos);
     void erase(iterator first, iterator last);
-    void resize(unsigned int size);//
+    void resize(unsigned int size);
     void swap(CustomVector<T> &otherV) noexcept;
-    void clear();//
+    void clear();
 
     template<class ... Args>
     void emplace(iterator it,Args&& ... args){
