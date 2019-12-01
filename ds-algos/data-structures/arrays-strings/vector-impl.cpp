@@ -69,6 +69,7 @@ public:
     void push_back(const T &item);//
     void push_front(const T &item);//
     void pop_back();//
+    void insert(iterator it, const T &item);
     void insert(unsigned int pos, const T &item);
     void erase(iterator pos);//
     void erase(iterator first, iterator last);
@@ -346,13 +347,21 @@ void CustomVector<T>::pop_back(){
 }
 
 template<typename T>
+void CustomVector<T>::insert(CustomVector<T>::iterator it, const T &item){
+    cout << "In insert(...)"<<"\n";
+    *it = item;
+}
+template<typename T>
 void CustomVector<T>::insert(unsigned int pos, const T &item){
     cout << "In insert(...)"<<"\n";
+    this->vectArray[pos] = item;
 }
 
 template<typename T>
 void CustomVector<T>::erase(CustomVector<T>::iterator it){
     cout << "In erase(...) #1"<<"\n";
+    
+    
 }
 
 template<typename T>
@@ -404,9 +413,16 @@ void printVect(const std::string &msg, const CustomVector<T> &vect){
 }
 
 int main(int argc, char **argv){
-    CustomVector<int> myVect0(10,701);
+    CustomVector<int> myVect0;
+    for(int i = 0; i< 9; i++) myVect0.push_back(i*5 + 20 %3);
+    printVect("PRINTING myVect0",myVect0);
+    CustomVector<int>::iterator it = myVect0.begin();
+    myVect0.insert(myVect0.end(), 707);
     printVect("PRINTING myVect0",myVect0);
     cout << "DONE: Creating 'myVect0' with constructor 'CustomVector()'\n";
+
+    CustomVector<int> v1(5,701);
+    printVect("printing v1", v1);
 
 
 
@@ -415,7 +431,6 @@ int main(int argc, char **argv){
     iterator begin(); // -- DONE
     iterator end(); // -- DONE
 
-    void insert(unsigned int pos, const T &item);
     void erase(iterator pos);
     void erase(iterator first, iterator last);
     */
