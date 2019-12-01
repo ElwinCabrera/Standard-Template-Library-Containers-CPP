@@ -150,13 +150,11 @@ CustomVector<T>& CustomVector<T>::operator=(CustomVector<T> &&other){
 /** Iterators **/
 template<typename T>
 typename CustomVector<T>::iterator CustomVector<T>::begin(){
-    cout << "In begin()"<<"\n";
     return vectArray;
 }
 
 template<typename T>
 typename CustomVector<T>::iterator CustomVector<T>::end(){
-    cout << "In end()"<<"\n";
     return vectArray + size();
 }
 
@@ -360,8 +358,14 @@ void CustomVector<T>::insert(unsigned int pos, const T &item){
 template<typename T>
 void CustomVector<T>::erase(CustomVector<T>::iterator it){
     cout << "In erase(...) #1"<<"\n";
-    
-    
+    if(it == end()-1) {
+        pop_back();
+    } else{
+        for(auto i = it; i < end(); i++){
+            if(i +1 < end()) *i = *(i +1);
+        }
+        --vectSize;
+    }
 }
 
 template<typename T>
@@ -418,6 +422,7 @@ int main(int argc, char **argv){
     printVect("PRINTING myVect0",myVect0);
     CustomVector<int>::iterator it = myVect0.begin();
     myVect0.insert(it +2, 707);
+    myVect0.erase(it +2);
     printVect("PRINTING myVect0",myVect0);
     cout << "DONE: Creating 'myVect0' with constructor 'CustomVector()'\n";
 
