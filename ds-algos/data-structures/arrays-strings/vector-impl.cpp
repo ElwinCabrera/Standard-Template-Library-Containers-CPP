@@ -55,8 +55,8 @@ public:
     CustomVector();
     CustomVector(unsigned int size);
     CustomVector(unsigned int size, const T &type);
-    CustomVector(const CustomVector<T> &v);
-    CustomVector(CustomVector<T> &&other) noexcept ;
+    CustomVector(const CustomVector<T> &v);             //Copy Constructor
+    CustomVector(CustomVector<T> &&other) noexcept ;    //Move Constructor
     ~CustomVector();
     CustomVector<T>& operator=(const CustomVector<T> &v);
     CustomVector<T>& operator=(CustomVector<T> &&other);
