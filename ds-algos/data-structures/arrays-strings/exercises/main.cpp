@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv){
 
-    cout << isUnique2("abc") << "\n";
-    //cout << isPermutation("Panama", "") << "\n";
+    //cout << isUnique2("abc") << "\n";
+    cout << isPermutation("", "") << "\n";
     return 0;
 }
