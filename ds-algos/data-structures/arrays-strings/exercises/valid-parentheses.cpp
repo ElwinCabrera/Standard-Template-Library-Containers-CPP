@@ -52,11 +52,15 @@ bool isValid(const string &s){
     for(int i = 0 ; i < s.size(); i++){
         if(s.at(i) == '(' || s.at(i) == '[' || s.at(i) == '{'){
             st.push(s.at(i));
-        } else if(s.at(i) == ')' || s.at(i) == ']' || s.at(i) == '}'){
+        } else { 
             char top = st.top();
-            if(top != s.at(i)) return false;
+            if(s.at(i) == ')' ) if(top != '(') return false;
+            if(s.at(i) == ']') if(top != '[') return false;
+            if(s.at(i) == '}') if(top != '{') return false;
+            
             st.pop();
-        } 
+        }
+
     }
 
     return st.empty();
