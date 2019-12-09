@@ -4,12 +4,10 @@
 #include "palindrome-permuation.cpp"
 #include "valid-parentheses.cpp"
 #include "one-away.cpp"
+#include "string-compression.cpp"
 
 int main(int argc, char **argv){
 
-    cout << "1. " << isOneAway("ealp","ple") << "\n";
-    cout << "2. " << isOneAway("pales","pale") << "\n";
-    cout << "3. " << isOneAway("pale","bale") << "\n";
-    cout << "4. " << isOneAway("pale","bake") << "\n";
+    cout << "1. " << compressString("aabcccccaa") << "\n";
     return 0;
 }
