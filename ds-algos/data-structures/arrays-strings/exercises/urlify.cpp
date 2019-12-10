@@ -1,7 +1,5 @@
-#include <iostream>
 #include <string>
 using std::string;
-using std::cout;
 
 /*
 Source: Cracking the Coding interview pg. 90

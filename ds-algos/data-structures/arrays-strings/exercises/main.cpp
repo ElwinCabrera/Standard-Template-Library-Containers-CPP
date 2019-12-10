@@ -1,3 +1,4 @@
+#include<iostream>
 #include "is-unique.cpp"
 #include "check-permutation.cpp"
 #include "urlify.cpp"
@@ -7,6 +8,10 @@
 #include "string-compression.cpp"
 #include "rotate-matrix.cpp"
 #include "zero-matrix.cpp"
+#include "string-rotation.cpp"
+
+using std::cout;
+using std::endl;
 
 void printMatrix(vector<vector<int>> &matrix);
 
@@ -18,11 +23,8 @@ int main(int argc, char **argv){
         {0,10,11,12},
         {13,14,15,16}
     };
-    printMatrix(matrix);
-    zeroMatrix(matrix);
-    printMatrix(matrix);
 
-    
+    cout << isSubstring("waterwottle","erwottewat") << "\n";    
 
     return 0;
 }

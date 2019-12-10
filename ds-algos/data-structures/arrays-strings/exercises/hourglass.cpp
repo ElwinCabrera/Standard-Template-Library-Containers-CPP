@@ -60,9 +60,6 @@ Print the largest (maximum) hourglass sum found in arr.
 
 
 
-
-
-#include <iostream>
 #include <vector>
 #include <limits.h>
 

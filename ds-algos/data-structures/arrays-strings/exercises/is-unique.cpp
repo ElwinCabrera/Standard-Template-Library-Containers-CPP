@@ -1,9 +1,6 @@
-#include <iostream>
 #include <string>
-#include <unordered_map>
-
 using std::string;
-using std::cout;
+
 /* 
  
  Source: Cracking the Coding interview pg. 90

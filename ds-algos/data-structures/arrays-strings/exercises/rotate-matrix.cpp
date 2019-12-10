@@ -2,8 +2,9 @@
 using std::vector;
 
 /*
-Given an image represented by an N x N matrix, where each pixel in the image is 4 bytes (an integer), write a method to rotate the image by 90 degrees. Can you do this in place?
+Source: Source: Cracking the Coding interview pg. 91
 
+Given an image represented by an N x N matrix, where each pixel in the image is 4 bytes (an integer), write a method to rotate the image by 90 degrees. Can you do this in place?
 */
 
 /*
