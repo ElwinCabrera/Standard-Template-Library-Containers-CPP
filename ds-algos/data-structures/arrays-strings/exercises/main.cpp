@@ -24,7 +24,7 @@ int main(int argc, char **argv){
         {13,14,15,16}
     };
 
-    cout << isSubstring("waterwottle","erwottewat") << "\n";    
+    cout << isSubstring2("waterbottle","erbottlewat") << "\n";    
 
     return 0;
 }
