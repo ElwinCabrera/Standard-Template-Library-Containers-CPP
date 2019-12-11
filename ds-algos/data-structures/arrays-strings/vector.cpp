@@ -39,6 +39,7 @@ clear()                                                 O(size)
 #include <string.h>
 #include <algorithm>
 #include <string>
+#include <climits>
 using std::cout;
 using std::endl;
 
@@ -206,7 +207,7 @@ unsigned int CustomVector<T>::size() const {
 template<typename T>
 unsigned int CustomVector<T>::max_size() const {
     cout << "In max_size()"<<"\n";
-    return currCapacity;
+    return UINT_MAX;
 }
 
 template<typename T>
