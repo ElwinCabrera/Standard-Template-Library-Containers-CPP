@@ -24,7 +24,7 @@ public:
 
 
 template <typename T>
-void printVect(const std::string &msg, const CustomVector<T> &vect){
+void printVect(const std::string &msg, const T &vect){
     cout << msg<<"\n" ;
     cout << "\t[";
     for(int i = 0 ; i< vect.size(); i++){

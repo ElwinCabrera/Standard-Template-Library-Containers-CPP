@@ -50,7 +50,7 @@ When using this resource it is best to start with going over some core concepts 
 - [ ] [Simulated annealing]()
 
 ### Data Structures
-- [ ] [Arrays and Strings]()
+- [ ] [Arrays and Strings](ds-algos/data-structures/arrays-strings/README.md)
 - [ ] [Linked List](ds-algos/data-structures/linked-list/README.md)
 - [ ] [Stacks]()
 - [ ] [Queues]()
