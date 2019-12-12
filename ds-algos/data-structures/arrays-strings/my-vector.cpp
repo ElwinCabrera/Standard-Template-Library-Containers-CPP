@@ -123,7 +123,7 @@ public:
 /** Constructors and Destructors **/
 template<typename T>
 CustomVector<T>::CustomVector(){
-    cout << "In Constructor #1"<<"\n";
+    //cout << "In Constructor #1"<<"\n";
     currCapacity = 0;
     vectSize = 0;
     buffer = nullptr;
@@ -131,7 +131,7 @@ CustomVector<T>::CustomVector(){
 
 template<typename T>
 CustomVector<T>::CustomVector(unsigned int size){
-    cout << "In Constructor #2"<<"\n";
+    //cout << "In Constructor #2"<<"\n";
     buffer = nullptr;
     this->vectSize = size;
     reserve(size);
@@ -140,7 +140,7 @@ CustomVector<T>::CustomVector(unsigned int size){
 template<typename T>
 CustomVector<T>::CustomVector(unsigned int size, const T &item){
     
-    cout << "In Constructor #3"<<"\n";
+    //cout << "In Constructor #3"<<"\n";
     if(this->buffer != nullptr) this->buffer = nullptr;
     reserve(size);
     this->vectSize = size;
@@ -149,7 +149,7 @@ CustomVector<T>::CustomVector(unsigned int size, const T &item){
 
 template<typename T>
 CustomVector<T>::CustomVector( const CustomVector<T> &other){
-    cout << "In Copy Constructor #4"<<"\n";
+    //cout << "In Copy Constructor #4"<<"\n";
     this->buffer = nullptr;
     reserve(other.size());
     vectSize = other.size();
@@ -158,14 +158,14 @@ CustomVector<T>::CustomVector( const CustomVector<T> &other){
 
 template<typename T>
 CustomVector<T>::CustomVector(CustomVector<T> &&other) noexcept {
-    cout << "In Move Constructor #5"<<"\n";
+    //cout << "In Move Constructor #5"<<"\n";
     buffer = other->buffer;
     other->buffer = nullptr;
 }
 
 template<typename T>
 CustomVector<T>::~CustomVector(){
-    cout << "In Custom Vector Destructor "<<"\n";
+    //cout << "In Custom Vector Destructor "<<"\n";
     if(buffer != nullptr) {
         delete[] buffer;
         buffer = nullptr;
@@ -174,7 +174,7 @@ CustomVector<T>::~CustomVector(){
 
 template<typename T>
 CustomVector<T>& CustomVector<T>::operator=(const CustomVector<T> &other){
-    cout << "In operator= (...)"<<"\n";
+    //cout << "In operator= (...)"<<"\n";
     CustomVector<T> tmpCpy(other);
     tmpCpy.swap(*this);
     return *this;
@@ -205,25 +205,25 @@ unsigned int CustomVector<T>::size() const {
 
 template<typename T>
 unsigned int CustomVector<T>::max_size() const {
-    cout << "In max_size()"<<"\n";
+    //cout << "In max_size()"<<"\n";
     return UINT_MAX;
 }
 
 template<typename T>
 bool CustomVector<T>::empty() const {
-    cout << "In empty()"<<"\n";
+    //cout << "In empty()"<<"\n";
     return size() == 0;
 }
 
 
 template<typename T> 
 void CustomVector<T>::reserve(unsigned int cap){
-    cout << "In reserve(..)"<<"\n";
+    //cout << "In reserve(..)"<<"\n";
     T *newArr;
     try{
         newArr = new T[(sizeof(T)* cap)];
     } catch (const std::bad_alloc& ba){
-        cout << "CustomVector reserve(): memory allocation failure: " << ba.what()<<"\n";
+        std::cerr << "CustomVector reserve(): memory allocation failure: " << ba.what()<<"\n";
     }
 
     if(buffer != nullptr) {
@@ -238,13 +238,13 @@ void CustomVector<T>::reserve(unsigned int cap){
 
 template<typename T>
 unsigned int CustomVector<T>::capacity() const {
-    cout << "In capacity()"<<"\n";
+    //cout << "In capacity()"<<"\n";
     return currCapacity;
 }
 
 template<typename T>
 void CustomVector<T>::shrink_to_fit(){
-    cout << "In shrink_to_fit()"<<"\n";
+    //cout << "In shrink_to_fit()"<<"\n";
     for(auto it = end(); it< begin() + currCapacity; it++) it->~T();
     currCapacity = vectSize;
 
@@ -287,19 +287,19 @@ T& CustomVector<T>::at(unsigned int idx) const{
 
 template <typename T>
 T& CustomVector<T>::front() const{
-    cout << "In front()"<<"\n";
+    //cout << "In front()"<<"\n";
     return buffer[0];
 }
 
 template <typename T>
 T& CustomVector<T>::back() const{
-    cout << "In back()"<<"\n";
+    //cout << "In back()"<<"\n";
     return buffer[vectSize-1];
 }
 
 template <typename T>
 T* CustomVector<T>::data() const{
-    cout << "In data()"<<"\n";
+    //cout << "In data()"<<"\n";
     return buffer;
 }
 
@@ -307,7 +307,7 @@ T* CustomVector<T>::data() const{
 /** Modifiers **/
 template<typename T>
 void CustomVector<T>::clear(){
-    cout << "In clear()"<<"\n";
+    //cout << "In clear()"<<"\n";
     if(buffer != nullptr) delete[] buffer;
     buffer = nullptr;
     vectSize = 0;
@@ -315,14 +315,14 @@ void CustomVector<T>::clear(){
 
 template<typename T>
 void CustomVector<T>::assign(unsigned int count, const T &item){
-    cout << "In assign(...)"<<"\n";
+    //cout << "In assign(...)"<<"\n";
     resize(count);
     for(unsigned int i = 0; i < count; i++) this->at(i) = item;
 }
 
 template<typename T>
 void CustomVector<T>::push_back(const T &item){
-    cout << "In push_back(...)"<<"\n";
+    //cout << "In push_back(...)"<<"\n";
     if(vectSize  == currCapacity){
 
         if(currCapacity == 0) reserve(1);
@@ -336,7 +336,7 @@ void CustomVector<T>::push_back(const T &item){
 
 template<typename T>
 void CustomVector<T>::push_front(const T &item){
-    cout << "In push_front(...)"<<"\n";
+    //cout << "In push_front(...)"<<"\n";
     if(vectSize == currCapacity){
         if(currCapacity == 0) reserve(1);
         else reserve(2 * currCapacity);
@@ -349,25 +349,25 @@ void CustomVector<T>::push_front(const T &item){
 
 template<typename T>
 void CustomVector<T>::pop_back(){
-    cout << "In pop_back()"<<"\n";
+    //cout << "In pop_back()"<<"\n";
     --vectSize;
     (end()-1)->~T();
 }
 
 template<typename T>
 void CustomVector<T>::insert(CustomVector<T>::iterator it, const T &item){
-    cout << "In insert(...)"<<"\n";
+    //cout << "In insert(...)"<<"\n";
     *it = item;
 }
 template<typename T>
 void CustomVector<T>::insert(unsigned int pos, const T &item){
-    cout << "In insert(...)"<<"\n";
+    //cout << "In insert(...)"<<"\n";
     this->buffer[pos] = item;
 }
 
 template<typename T>
 void CustomVector<T>::erase(CustomVector<T>::iterator it){
-    cout << "In erase(...) #1"<<"\n";
+    //cout << "In erase(...) #1"<<"\n";
     if(it == end()-1) {
         pop_back();
     } else{
@@ -381,7 +381,7 @@ void CustomVector<T>::erase(CustomVector<T>::iterator it){
 
 template<typename T>
 void CustomVector<T>::erase(CustomVector<T>::iterator first, CustomVector<T>::iterator last){
-    cout << "In erase(...) #2"<<"\n";
+    //cout << "In erase(...) #2"<<"\n";
     int count = 0;
     for(auto it = first; it < last; it++){
         ++count;
@@ -399,7 +399,7 @@ void CustomVector<T>::erase(CustomVector<T>::iterator first, CustomVector<T>::it
 
 template<typename T>
 void CustomVector<T>::resize(unsigned int size)  {
-    cout << "In resize(...)"<<"\n";
+    //cout << "In resize(...)"<<"\n";
     T *newArr = new T[size];
     
     int stopIdx = (size > vectSize) ? vectSize: size;
@@ -413,7 +413,7 @@ void CustomVector<T>::resize(unsigned int size)  {
 
 template<typename T>
 void CustomVector<T>::swap(CustomVector<T> &otherV) noexcept{
-    cout << "In swap(...)"<<"\n";
+    //cout << "In swap(...)"<<"\n";
     using std::swap;
     unsigned int i = otherV.size();
     swap(this->vectSize, i);

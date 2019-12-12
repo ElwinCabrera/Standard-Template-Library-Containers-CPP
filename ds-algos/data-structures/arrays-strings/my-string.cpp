@@ -14,6 +14,7 @@ public:
 
     /*************** Member functions **************/
     BasicString(): buffer(nullptr), bufferSize(0), bufferCap(0) {}
+    BasicString(const char *s);
     BasicString(const char c, unsigned int count);
     BasicString(const BasicString &other); //Copy Constructor
     BasicString(BasicString &&other) noexcept; //Move constructor
@@ -104,7 +105,7 @@ public:
     */
     void resize(unsigned int count);
     void resize(unsigned int count, char c);
-    void swap(BasicString &other);
+    //void swap(BasicString &other);
     void swap(BasicString &other) noexcept;
 
 
@@ -150,6 +151,13 @@ private:
 
 
 /*************** Member functions **************/
+
+BasicString::BasicString(const char *s){
+    this->bufferSize = 0;
+    this->bufferCap = 0;
+    this->buffer = nullptr;
+    for(unsigned int i = 0; s[i] != '\0'; ++i) this->push_back(s[i]);
+}
 BasicString::BasicString(const char c, unsigned int count){
     this->bufferSize = count;
     this->buffer = nullptr;
@@ -255,7 +263,7 @@ BasicString& BasicString::insert(unsigned int idx, const char* s) {
     // Inserts null-terminated character string pointed to by s at the position index. The length of the string is determined by the first null character using Traits::length(s). 
     unsigned int count = 0;
     const char *cptr = s;
-    while(cptr != '\0') {
+    while(*cptr != '\0') {
         cptr++;
         count++;
     }
@@ -361,35 +369,43 @@ void BasicString::pop_back(){
 BasicString& BasicString::append(unsigned int count, char c){
     //Appends count copies of character ch
     for(unsigned int i = 0; i < count; ++i) this->push_back(c);
+    return *this;
 } 
 BasicString& BasicString::append(const BasicString &str){
     // Appends string str
     for(unsigned int i = 0; i < str.size(); ++i) this->push_back(str.at(i));
+    return *this;
 } 
 BasicString& BasicString::append(const BasicString &str, unsigned int pos, unsigned int count){
     // Appends a substring [pos, pos+count) of str. If the requested substring lasts past the end of the string, or if count == npos, the appended substring is [pos, size()). If pos > str.size(), std::out_of_range is thrown. 
     if(pos == BasicString::npos) count = str.size();
     for(unsigned int i = pos; i < pos + count; ++i) this->push_back(str.at(i));
+    return *this;
 } 
 BasicString& BasicString::append(const char* s, unsigned int count){
     // Appends characters in the range [s, s + count). This range can contain null characters.
     for(unsigned int i = 0; i < count; ++i) this->push_back(s[i]);
+    return *this;
 } 
 BasicString& BasicString::append(const char* s){
     // Appends the null-terminated character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s)
     for(unsigned int i = 0; s[i] != '\0'; ++i) this->push_back(s[i]);
+    return *this;
 } 
 BasicString& BasicString::operator+= (const BasicString &str){
     //Appends string str
     for(unsigned int i = 0; i < str.size(); ++i) this->push_back(str.at(i));
+    return *this;
 } 
 BasicString& BasicString::operator+= (char c){
     //Appends character ch
     this->push_back(c);
+    return *this;
 } 
 BasicString& BasicString::operator+= (const char *s){
     // Appends the null-terminated character string pointed to by s.
     for(unsigned int i = 0; s[i] != '\0'; ++i) this->push_back(s[i]);
+    return *this;
 }
 
 int BasicString::compare(const BasicString &str) const{
@@ -572,6 +588,54 @@ BasicString BasicString::substr(unsigned int pos , unsigned int count) const{
 unsigned int BasicString::copy(char *dest, unsigned int count, unsigned int pos) const{
     // Copies a substring [pos, pos+count) to character string pointed to by dest. If the requested substring lasts past the end of the string, or if count == npos, the copied substring is [pos, size()). The resulting character string is not null-terminated. 
 } 
+
+/*
+Resizes the string to contain count characters.
+If the current size is less than count, additional characters are appended.
+If the current size is greater than count, the string is reduced to its first count elements.
+The first version initializes new characters to CharT(), the second version initializes new characters to ch. 
+*/
+void BasicString::resize(unsigned int count){
+    if(count < 1 || count > this->max_size()) throw std::length_error("resize length error");
+
+
+    if(count > this->size()){
+        char *newBuffer = new char[sizeof(char) * count];
+        for(unsigned int i = 0 ; i < this->size(); ++i) newBuffer[i] = this->buffer[i];
+        for(unsigned int i = this->size(); i < count; ++i) newBuffer[i] = '\0';
+        delete[] this->buffer;
+        this->buffer = newBuffer;
+        this->bufferCap = count;
+
+    } else if(count < this->size()){
+        for(unsigned int i = count; i < this->size(); ++i) this->buffer[i] = '\0';
+    }
+    this->bufferSize = count;
+}
+void BasicString::resize(unsigned int count, char c){
+    if(count < 1 || count > this->max_size()) throw std::length_error("resize length error");
+
+
+    if(count > this->size()){
+        char *newBuffer = new char[sizeof(char) * count];
+        for(unsigned int i = 0 ; i < this->size(); ++i) newBuffer[i] = this->buffer[i];
+        for(unsigned int i = this->size(); i < count; ++i) newBuffer[i] = c;
+        delete[] this->buffer;
+        this->buffer = newBuffer;
+        this->bufferCap = count;
+
+    } else if(count < this->size()){
+        for(unsigned int i = count; i < this->size(); ++i) this->buffer[i] = '\0';
+    }
+    this->bufferSize = count;
+}
+
+void BasicString::swap(BasicString &other) noexcept{
+    using std::swap;
+    unsigned int i = other.size();
+    swap(this->bufferSize, i);
+    swap(this->buffer, other.buffer);
+}
 
 // namespace myStrImp{
 //     typename BasicString String;
