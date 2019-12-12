@@ -1,6 +1,6 @@
 # Learn Data Structures and Algorithms
 
-[![cpp-version](https://img.shields.io/badge/language-C%2B%2B-blue)](https://isocpp.org/)  [![cpp-version](https://img.shields.io/badge/language-C%2B%2B-blue)](https://img.shields.io/github/license/ElwinCabrera/ds-algos)
+[![cpp-version](https://img.shields.io/badge/language-C%2B%2B-blue)](https://isocpp.org/) [![cpp-version](https://img.shields.io/github/license/ElwinCabrera/ds-algos)](https://opensource.org/licenses/BSD-3-Clause)
 
 This repository was created for me to better understand and reinforce computer science fundamentals in data structures and algorithms. This project has two main goals. First, is to go over all of the core and important data structures and algorithms used in computer science. The second goal is to have at least 25 practice exercises per category in data structures and in algorithms. I hope you find this repository useful and informative as well.
 
