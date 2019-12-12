@@ -360,28 +360,74 @@ void BasicString::pop_back(){
 
 BasicString& BasicString::append(unsigned int count, char c){
     //Appends count copies of character ch
+    for(unsigned int i = 0; i < count; ++i) this->push_back(c);
 } 
 BasicString& BasicString::append(const BasicString &str){
     // Appends string str
+    for(unsigned int i = 0; i < str.size(); ++i) this->push_back(str.at(i));
 } 
 BasicString& BasicString::append(const BasicString &str, unsigned int pos, unsigned int count){
     // Appends a substring [pos, pos+count) of str. If the requested substring lasts past the end of the string, or if count == npos, the appended substring is [pos, size()). If pos > str.size(), std::out_of_range is thrown. 
+    if(pos == BasicString::npos) count = str.size();
+    for(unsigned int i = pos; i < pos + count; ++i) this->push_back(str.at(i));
 } 
 BasicString& BasicString::append(const char* s, unsigned int count){
     // Appends characters in the range [s, s + count). This range can contain null characters.
+    for(unsigned int i = 0; i < count; ++i) this->push_back(s[i]);
 } 
 BasicString& BasicString::append(const char* s){
     // Appends the null-terminated character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s)
+    for(unsigned int i = 0; s[i] != '\0'; ++i) this->push_back(s[i]);
 } 
 BasicString& BasicString::operator+= (const BasicString &str){
     //Appends string str
+    for(unsigned int i = 0; i < str.size(); ++i) this->push_back(str.at(i));
 } 
 BasicString& BasicString::operator+= (char c){
     //Appends character ch
+    this->push_back(c);
 } 
 BasicString& BasicString::operator+= (const char *s){
     // Appends the null-terminated character string pointed to by s.
-} 
+    for(unsigned int i = 0; s[i] != '\0'; ++i) this->push_back(s[i]);
+}
+
+int BasicString::compare(const BasicString &str) const{
+
+} //Compares this string to str.
+int BasicString::compare(unsigned int pos1, unsigned int count1, const BasicString &str) const{
+
+} //  Compares a [pos1, pos1+count1) substring of this string to str. If count1 > size() - pos1 the substring is [pos1, size()).
+int BasicString::compare(unsigned int pos1, unsigned int count1, const BasicString &str, unsigned int pos2, unsigned int count2) const{
+
+} // Compares a [pos1, pos1+count1) substring of this string to a substring [pos2, pos2+count2) of str. If count1 > size() - pos1 the first substring is [pos1, size()). Likewise, count2 > str.size() - pos2 the second substring is [pos2, str.size()).
+int BasicString::compare(const char *s) const{
+
+} //  Compares this string to the null-terminated character sequence beginning at the character pointed to by s with length Traits::length(s).
+int BasicString::compare(unsigned int pos1, unsigned int count1, const char *s) const{
+
+} // Compares a [pos1, pos1+count1) substring of this string to the null-terminated character sequence beginning at the character pointed to by s with length Traits::length(s) If count1 > size() - pos1 the substring is [pos1, size()).
+int BasicString::compare(unsigned int pos1, unsigned int count1, const char *s, unsigned int count2){
+
+} //  Compares a [pos1, pos1+count1) substring of this string to the characters in the range [s, s + count2). If count1 > size() - pos1 the substring is [pos1, size()). (Note: the characters in the range [s, s + count2) may include null characters.)
+bool BasicString::startsWith(BasicString &str) const{
+
+} // a string str. (new in c++20)
+bool BasicString::startsWith(char c) const noexcept{
+
+} //a single character c. (new in c++20)
+bool BasicString::startsWith(const char *s) const{
+
+} //a null-terminated character string s. (new in c++20)
+bool BasicString::endsWith(BasicString &str) const{
+
+} // a string str. (new in c++20)
+bool BasicString::endsWith(char c) const noexcept{
+
+} //a single character c. (new in c++20)
+bool BasicString::endsWith(const char *s) const{
+    
+} //a null-terminated character string s. (new in c++20)
 
 // namespace myStrImp{
 //     typename BasicString String;
