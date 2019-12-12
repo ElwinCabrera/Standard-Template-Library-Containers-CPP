@@ -38,10 +38,9 @@ clear()                                                 O(size)
 #include <iostream>
 #include <string.h>
 #include <algorithm>
-#include <string>
 #include <climits>
-using std::cout;
-using std::endl;
+
+ 
 
 template<class T>
 class CustomVector{
@@ -318,8 +317,7 @@ template<typename T>
 void CustomVector<T>::assign(unsigned int count, const T &item){
     cout << "In assign(...)"<<"\n";
     resize(count);
-    this->vectSize = count;
-    for(int i = 0; i < count; i++) this->at(i) = item;
+    for(unsigned int i = 0; i < count; i++) this->at(i) = item;
 }
 
 template<typename T>
@@ -423,55 +421,7 @@ void CustomVector<T>::swap(CustomVector<T> &otherV) noexcept{
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*********************************** TESTS AND DEBUG ***********************************************/
-
-
-class Tst
-{
-private:
-    /* data */
-    std::string h = "hello";
-public:
-    Tst() {}
-    ~Tst() {}
-    friend std::ostream& operator<< (std::ostream &out, const Tst& t){ 
-        out << t.h; 
-        return out; 
-    } 
-};
-
-
-
-template <typename T>
-void printVect(const std::string &msg, const CustomVector<T> &vect){
-    cout << msg<<"\n" ;
-    cout << "\t[";
-    for(int i = 0 ; i< vect.size(); i++){
-        cout << vect.at(i) <<",";
-    }
-    cout << "]\n";
-}
-
-int main(int argc, char **argv){
-    CustomVector<int> myVect0;
-    for(int i = 0; i< 11; i++) myVect0.push_back(i*5 + 20 %3);
-    printVect("Printing 'myVect0'",myVect0);
-    myVect0.erase(myVect0.begin()+1,myVect0.begin()+4);
-    printVect("Printing 'myVect0'",myVect0);
-    cout << "DONE: Creating 'myVect0' with constructor 'CustomVector()'\n";
-}
+// template<typename T>
+// namespace test {
+//     typedef CustomVector<T> vect;
+// }
