@@ -393,41 +393,88 @@ BasicString& BasicString::operator+= (const char *s){
 }
 
 int BasicString::compare(const BasicString &str) const{
-
+    unsigned int idx = 0;
+    while(idx < str.size()&& idx < this->bufferSize ){
+        if( this->buffer[idx] < str.at(idx) ) return -1;
+        else if(this->buffer[idx] > str.at(idx)) return 1;
+        ++idx;
+    }
+    return 0;
 } //Compares this string to str.
 int BasicString::compare(unsigned int pos1, unsigned int count1, const BasicString &str) const{
-
+    unsigned int idx = 0; 
+    while (idx < str.size() && pos1 < count1){
+        if( this->buffer[pos1] < str.at(idx) ) return -1;
+        else if(this->buffer[pos1] > str.at(idx)) return 1;
+        ++pos1;
+        ++idx;
+    }
+    return 0;
+    
 } //  Compares a [pos1, pos1+count1) substring of this string to str. If count1 > size() - pos1 the substring is [pos1, size()).
 int BasicString::compare(unsigned int pos1, unsigned int count1, const BasicString &str, unsigned int pos2, unsigned int count2) const{
 
 } // Compares a [pos1, pos1+count1) substring of this string to a substring [pos2, pos2+count2) of str. If count1 > size() - pos1 the first substring is [pos1, size()). Likewise, count2 > str.size() - pos2 the second substring is [pos2, str.size()).
 int BasicString::compare(const char *s) const{
-
+    unsigned int idx = 0;
+    while(s[idx] != '\0' && idx < this->bufferSize ){
+        if( this->buffer[idx] < s[idx] ) return -1;
+        else if(this->buffer[idx] > s[idx]) return 1;
+        ++idx;
+    }
+    return 0;
 } //  Compares this string to the null-terminated character sequence beginning at the character pointed to by s with length Traits::length(s).
 int BasicString::compare(unsigned int pos1, unsigned int count1, const char *s) const{
+    unsigned int idx = 0;
+    while(s[idx] != '\0' && pos1 < count1 ){
+        if( this->buffer[pos1] < s[idx] ) return -1;
+        else if(this->buffer[pos1] > s[idx]) return 1;
+        ++idx;
+        ++pos1;
+    }
+    return 0;
 
 } // Compares a [pos1, pos1+count1) substring of this string to the null-terminated character sequence beginning at the character pointed to by s with length Traits::length(s) If count1 > size() - pos1 the substring is [pos1, size()).
 int BasicString::compare(unsigned int pos1, unsigned int count1, const char *s, unsigned int count2){
 
 } //  Compares a [pos1, pos1+count1) substring of this string to the characters in the range [s, s + count2). If count1 > size() - pos1 the substring is [pos1, size()). (Note: the characters in the range [s, s + count2) may include null characters.)
 bool BasicString::startsWith(BasicString &str) const{
-
-} // a string str. (new in c++20)
+    // a string str. (new in c++20)
+    if(this->bufferSize < str.size()) return false;
+    for(unsigned int i = 0 ; i < str.size(); ++i) if(this->buffer[i] != str.at(i)) return false;
+    return true;
+} 
 bool BasicString::startsWith(char c) const noexcept{
-
-} //a single character c. (new in c++20)
+    //a single character c. (new in c++20)
+    return c == this->buffer[0];
+} 
 bool BasicString::startsWith(const char *s) const{
-
-} //a null-terminated character string s. (new in c++20)
+    //a null-terminated character string s. (new in c++20)
+    for(unsigned int i = 0 ; s[i] != '\0'; ++i) {
+        if(i > this->bufferSize || this->buffer[i] != s[i]) return false;
+    }
+    return true;
+} 
 bool BasicString::endsWith(BasicString &str) const{
-
-} // a string str. (new in c++20)
+    // a string str. (new in c++20)
+    if(this->bufferSize > str.size()) return false;
+    unsigned int idx1 = this->bufferSize -1; 
+    for(unsigned int i = str.size()-1; i>=0; --i) if(str.at(i) != this->buffer[idx1--]) return false;
+    return true;
+} 
 bool BasicString::endsWith(char c) const noexcept{
-
-} //a single character c. (new in c++20)
+    //a single character c. (new in c++20)
+    return this->buffer[this->bufferSize-1] == c;
+} 
 bool BasicString::endsWith(const char *s) const{
-    
-} //a null-terminated character string s. (new in c++20)
+    //a null-terminated character string s. (new in c++20)
+    unsigned int count =0;
+    for(unsigned int i =0; i < s[i] != '\0'; ++i ) count++;
+    if(this->bufferSize < count) return false;
+    unsigned int idx1 = this->bufferSize-1;
+    for(unsigned int i = count-1; i >=0; --i) if(this->buffer[idx1--] != s[i]) return false;
+    return true;
+} 
 
 // namespace myStrImp{
 //     typename BasicString String;
