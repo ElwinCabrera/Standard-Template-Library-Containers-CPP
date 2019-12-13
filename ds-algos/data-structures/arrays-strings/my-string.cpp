@@ -21,8 +21,14 @@ public:
     ~BasicString();
     BasicString& operator=(const BasicString &str);
     BasicString& operator=(BasicString &&other);
-    void assign(unsigned int count, const char c);
 
+    void assign(unsigned int count, const char c);
+    
+    /*************** Operators **************/
+    friend bool operator==(const BasicString &s1, const BasicString &s2);
+    friend BasicString& operator+(const BasicString &s1, const BasicString &s2);
+    friend std::ostream& operator<<(std::ostream &os, const BasicString &s);
+    friend std::istream& operator>>(std::istream &is, const BasicString &s);
 
 
     /*************** Element access **************/
@@ -197,6 +203,26 @@ BasicString& BasicString::operator=(BasicString &&other){ }
 void BasicString::assign(unsigned int count, const char c){
     resize(count);
     for(unsigned int i = 0; i < count; ++i) this->buffer[i] = c;
+}
+
+/*************** Operators **************/
+bool operator==(const BasicString &s1, const BasicString &s2){
+    if(s1.size() == s2.size()){
+        for(unsigned int i = 0; i < s1.size(); ++i) if(s1.at(i) != s2.at(i)) return false;
+    } else return false;
+    
+    return true;
+}
+BasicString& operator+(const BasicString &s1, const BasicString &s2){
+    BasicString result(s1);
+    result.append(s2);
+    return 
+}
+std::ostream& operator<<(std::ostream &os, const BasicString &s){
+
+}
+std::istream& operator>>(std::istream &is, const BasicString &s){
+
 }
 
 /*************** Element access **************/

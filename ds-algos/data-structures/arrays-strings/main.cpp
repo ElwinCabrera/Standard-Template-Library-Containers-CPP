@@ -1,7 +1,8 @@
 #include <iostream>
+#include <cassert>
+#include <string>
 //#include "my-vector.cpp"
 #include "my-string.cpp"
-
 using std::cout;
 using std::endl;
 
@@ -35,11 +36,72 @@ void printVect(const std::string &msg, const Obj &vect){
     cout << "] size: " << vect.size()<<"\n";
 }
 
-int main(int argc, char **argv){
-    BasicString s1("string");
-    BasicString s2 = s1;
 
+
+
+void string_testConstructorDestructorsAssign(){
+
+}
+
+void string_testElementAccess(){
+
+}
+
+void string_operators(){
+
+}
+
+void testIterators(){
+
+}
+
+void string_testInsert(){
+    BasicString s("xmplr");
+ 
+    // insert(size_type index, size_type count, char ch)
+    //s.insert(0, 1, 'E');
+    assert("Exmplr" == s);
+ 
+    // insert(size_type index, const char* s)
+    s.insert(2, "e");
+    assert("Exemplr" == s);
+ 
+    // insert(size_type index, string const& str)
+    s.insert(6, "a");
+    assert("Exemplar" == s);
+ 
+    // insert(size_type index, string const& str,
+    //     size_type index_str, size_type count)
+    s.insert(8, " is an example string."s, 0, 14);
+    assert("Exemplar is an example" == s);
+ 
+    // insert(const_iterator pos, char ch)
+    s.insert(s.cbegin() + s.find_first_of('n') + 1, ':');
+    assert("Exemplar is an: example" == s);
+ 
+    // insert(const_iterator pos, size_type count, char ch)
+    //s.insert(s.cbegin() + s.find_first_of(':') + 1, 2, '=');
+    //assert("Exemplar is an:== example" == s);
+ 
+    // insert(const_iterator pos, InputIt first, InputIt last)
+    // {
+    //     std::string seq = " string";
+    //     s.insert(s.begin() + s.find_last_of('e') + 1,
+    //         std::begin(seq), std::end(seq));
+    //     assert("Exemplar is an:== example string" == s);
+    // }
+ 
+    // insert(const_iterator pos, std::initializer_list<char>)
+    // s.insert(s.cbegin() + s.find_first_of('g') + 1, { '.' });
+    // assert("Exemplar is an:== example string." == s);
+}
+
+void string_testErase(){
     
+}
+
+void string_testAppend(){
+    BasicString s1("string");
     const char* cptr = "C-string";
     const char carr[] = "Two and one";
  
@@ -74,5 +136,36 @@ int main(int argc, char **argv){
     // 7) Append initializer list
     //output.append({ ' ', 'l', 'i', 's', 't' });
     //printVect("7) ", output);
+}
+
+void string_testCompare(){
+
+}
+
+void string_testEndsStartsWith(){
+    
+}
+
+void string_testReplace(){
+    
+}
+
+void string_substr(){
+    
+}
+
+void string_copy(){
+    
+}
+
+void string_resize(){
+    
+}
+
+
+
+
+int main(int argc, char **argv){
+    
 
 }
