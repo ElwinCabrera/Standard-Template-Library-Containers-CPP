@@ -60,7 +60,7 @@ public:
 
     /*************** Operations **************/
     void clear();
-    BasicString& insert(unsigned int idx, unsigned int count, const char c); // Inserts count copies of character ch at the position index
+    BasicString& insert(unsigned int idx, unsigned int count, char c); // Inserts count copies of character ch at the position index
     BasicString& insert(unsigned int idx, const char* string); // Inserts null-terminated character string pointed to by s at the position index. The length of the string is determined by the first null character using Traits::length(s). 
     BasicString& insert(unsigned int idx, const char* string, unsigned int endPos); //Inserts the characters in the range [s, s+count) at the position index. The range can contain null characters.
     BasicString& insert(unsigned int idx , const BasicString &str); //Inserts string str at the position index
@@ -216,10 +216,10 @@ bool operator==(const BasicString &s1, const BasicString &s2){
 BasicString& operator+(const BasicString &s1, const BasicString &s2){
     BasicString result(s1);
     result.append(s2);
-    return 
+    return result;
 }
 std::ostream& operator<<(std::ostream &os, const BasicString &s){
-
+    os << s.data();
 }
 std::istream& operator>>(std::istream &is, const BasicString &s){
 
@@ -278,65 +278,138 @@ void BasicString::clear() {
     this->bufferCap = 0;
     this->bufferSize = 0;
 }
-BasicString& BasicString::insert(unsigned int idx, unsigned int count, const char c) {
+
+
+
+BasicString& BasicString::insert(unsigned int idx, unsigned int count, char c) {
     // Inserts count copies of character ch at the position index
-    if(idx + count >= this->bufferCap ) resize(idx + count);
-    if(idx + count >= this->bufferSize) this->bufferSize = idx + count;
+    if(idx > this->size() || idx == npos) return *this; // throw an error
+    resize(this->size() + count);
+    unsigned int end = this->size()-1;
+    unsigned int prevEnd = end - count; 
+    
+    while (prevEnd >= idx && prevEnd != npos){
+        this->buffer[end] = this->buffer[prevEnd];
+        --end;
+        --prevEnd;
+    }
+    
     for(unsigned int i = idx; i < idx + count; ++i) this->buffer[i] = c;
     return *this;
 }
 BasicString& BasicString::insert(unsigned int idx, const char* s) {
     // Inserts null-terminated character string pointed to by s at the position index. The length of the string is determined by the first null character using Traits::length(s). 
+    if(idx > this->size() || idx == npos) return *this; // throw an error
     unsigned int count = 0;
     const char *cptr = s;
     while(*cptr != '\0') {
         cptr++;
         count++;
     }
-    if(idx + count >= this->bufferCap ) resize(idx + count);
-    if(idx + count >= this->bufferSize) this->bufferSize = idx + count;
-    unsigned int idx2 = 0; 
-    for(unsigned int i = idx; i < idx + count; ++i) this->buffer[i] = s[idx2++]; 
+    resize(this->size() + count);
+    
+    unsigned int end = this->size()-1;
+    unsigned int prevEnd = end - count; 
+    
+    while (prevEnd >= idx && prevEnd != npos){
+        this->buffer[end] = this->buffer[prevEnd];
+        --end;
+        --prevEnd;
+    }
+    unsigned int sIdx = 0;
+    for(unsigned int i = idx; i < idx + count; ++i) this->buffer[i] = s[sIdx++];
     return *this;
 }
 BasicString& BasicString::insert(unsigned int idx, const char* s, unsigned int count) {
     //Inserts the characters in the range [s, s+count) at the position index. The range can contain null characters.
-    if(idx + count >= this->bufferCap ) resize(idx + count);
-    if(idx + count >= this->bufferSize) this->bufferSize = idx + count;
-    unsigned int idx2 = 0;
-    for(unsigned int i = idx; i < idx + count; ++i) this->buffer[i] = s[idx2++];
+    if(idx > this->size() || idx == npos) return *this; // throw an error
+    resize(this->size() + count);
+    
+    unsigned int end = this->size()-1;
+    unsigned int prevEnd = end - count; 
+    
+    while (prevEnd >= idx && prevEnd != npos){
+        this->buffer[end] = this->buffer[prevEnd];
+        --end;
+        --prevEnd;
+    }
+
+    unsigned int sIdx = 0;
+    for(unsigned int i = idx; i < idx + count; ++i) this->buffer[i] = s[sIdx++];
     return *this;
 }
 BasicString& BasicString::insert(unsigned int idx , const BasicString &str) {
     //Inserts string str at the position index
-    if(idx + str.size() >= this->bufferCap ) resize(idx + str.size());
-    if(idx + str.size() >= this->bufferSize) this->bufferSize = idx + str.size();
-    unsigned int idx2 = 0;
-    for(unsigned int i = idx; i < idx + str.size(); ++i) this->buffer[i] = str.at(idx2++);
+    if(idx > this->size() || idx == npos) return *this; // throw an error
+    resize(this->size() + str.size());
+    
+    unsigned int end = this->size()-1;
+    unsigned int prevEnd = end - str.size(); 
+    
+    while (prevEnd >= idx && prevEnd != npos){
+        this->buffer[end] = this->buffer[prevEnd];
+        --end;
+        --prevEnd;
+    }
+    unsigned int strIdx = 0;
+    for(unsigned int i = idx; i < idx + str.size(); ++i) this->buffer[i] = str.at(strIdx++);
     return *this;
 }
 BasicString& BasicString::insert(unsigned int idx, const BasicString &str, unsigned int index_str, unsigned int count) {
     // Inserts a string, obtained by str.substr(index_str, count) at the position index
-    if(idx + count >= this->bufferCap ) resize(idx + count);
-    if(idx + count >= this->bufferSize) this->bufferSize = idx + count;
+    if(idx > this->size() || idx == npos) return *this; // throw an error
+    resize(this->size() + count);
+    
+    unsigned int end = this->size()-1;
+    unsigned int prevEnd = end - count; 
+    
+    while (prevEnd >= idx && prevEnd != npos){
+        this->buffer[end] = this->buffer[prevEnd];
+        --end;
+        --prevEnd;
+    }
+    unsigned int strIdx = 0;
     for(unsigned int i = idx; i < idx + count; ++i) this->buffer[i] = str.at(index_str++);
+    
     return *this;
 }
 BasicString::iterator BasicString::insert(iterator pos, char c){
     // Inserts character c before the character pointed by pos
-    *(pos -1) = c;
-    return (pos-1);
+    if(pos >= this->end() || pos < this->begin()) return pos; // throw an error
+    unsigned int idx = pos - this->begin();
+    
+    resize(this->size() + 1);
+    
+    unsigned int end = this->size()-1;
+    unsigned int prevEnd =  end - 1; 
+    
+    
+    while (prevEnd >= idx && prevEnd != npos){
+        this->buffer[end] = this->buffer[prevEnd];
+        --end;
+        --prevEnd;
+    }
+    this->buffer[idx] = c;
+    return &this->buffer[idx];
 }
 void BasicString::insert(iterator pos, unsigned int count, char c) {
     // Inserts count copies of character ch before the element (if any) pointed by pos
-    if(pos + count >= this->end()) resize(count);
-    if(count >= this->bufferSize) this->bufferSize = count;
-    pos -= 1;
-    for(unsigned int i = 0; i < count; ++i) {
-        *(pos) = c;
-        pos++;
-    } 
+    if(pos >= this->end() || pos < this->begin()) return; // throw an error
+    unsigned int idx = pos - this->begin();
+    
+    resize(this->size() + 1);
+    
+    unsigned int end = this->size()-1;
+    unsigned int prevEnd =  end - 1; 
+    
+    while(prevEnd >= idx && prevEnd != npos){
+        this->buffer[end] = this->buffer[prevEnd];
+        --end;
+        --prevEnd;
+    }
+    for(unsigned int i = idx; i < idx +count; ++i) this->buffer[i] = c;
 }
+
 
 BasicString& BasicString::erase(unsigned int idx , unsigned int count ){
     //Removes min(count, size() - index) characters starting at index.
@@ -465,6 +538,7 @@ int BasicString::compare(unsigned int pos1, unsigned int count1, const BasicStri
 } 
 int BasicString::compare(unsigned int pos1, unsigned int count1, const BasicString &str, unsigned int pos2, unsigned int count2) const{
     // Compares a [pos1, pos1+count1) substring of this string to a substring [pos2, pos2+count2) of str. If count1 > size() - pos1 the first substring is [pos1, size()). Likewise, count2 > str.size() - pos2 the second substring is [pos2, str.size()).
+    
 } 
 int BasicString::compare(const char *s) const{
     //  Compares this string to the null-terminated character sequence beginning at the character pointed to by s with length Traits::length(s).
@@ -609,10 +683,12 @@ BasicString& BasicString::replace(const iterator first, const iterator last, uns
 } 
 BasicString BasicString::substr(unsigned int pos , unsigned int count) const{
     // Returns a substring [pos, pos+count). If the requested substring extends past the end of the string, or if count == npos, the returned substring is [pos, size()).
+    
 } 
 
 unsigned int BasicString::copy(char *dest, unsigned int count, unsigned int pos) const{
     // Copies a substring [pos, pos+count) to character string pointed to by dest. If the requested substring lasts past the end of the string, or if count == npos, the copied substring is [pos, size()). The resulting character string is not null-terminated. 
+
 } 
 
 /*
@@ -631,7 +707,7 @@ void BasicString::resize(unsigned int count){
         for(unsigned int i = this->size(); i < count; ++i) newBuffer[i] = '\0';
         delete[] this->buffer;
         this->buffer = newBuffer;
-        this->bufferCap = count;
+        if(this->bufferCap < count) this->bufferCap = count;
 
     } else if(count < this->size()){
         for(unsigned int i = count; i < this->size(); ++i) this->buffer[i] = '\0';
