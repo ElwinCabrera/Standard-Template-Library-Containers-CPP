@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <climits>
 #include <math.h>
+#include <new>
 
 class BasicString{
 public:
@@ -14,7 +15,12 @@ public:
 
     /*************** Member functions **************/
     BasicString(): buffer(nullptr), bufferSize(0), bufferCap(0) {}
+    BasicString(unsigned int count, char c); 
+    BasicString(const BasicString &other, unsigned int pos, unsigned int count = npos);
     BasicString(const char *s);
+    BasicString(const char *s, unsigned int count);
+    BasicString(iterator inputFirst, iterator inputLast);
+
     BasicString(const char c, unsigned int count);
     BasicString(const BasicString &other); //Copy Constructor
     BasicString(BasicString &&other) noexcept; //Move constructor
@@ -26,7 +32,7 @@ public:
     
     /*************** Operators **************/
     friend bool operator==(const BasicString &s1, const BasicString &s2);
-    friend BasicString& operator+(const BasicString &s1, const BasicString &s2);
+    friend BasicString operator+(const BasicString &s1, const BasicString &s2);
     friend std::ostream& operator<<(std::ostream &os, const BasicString &s);
     friend std::istream& operator>>(std::istream &is, const BasicString &s);
 
@@ -102,7 +108,7 @@ public:
     BasicString& replace(unsigned int pos, unsigned int count, unsigned int count2, char c); // count2 copies of character ch;
     BasicString& replace(const iterator first, const iterator last, unsigned int count2, char c); // count2 copies of character ch;
     BasicString substr(unsigned int pos =0, unsigned int count= npos) const; // Returns a substring [pos, pos+count). If the requested substring extends past the end of the string, or if count == npos, the returned substring is [pos, size()). 
-    unsigned int copy(char *dest, unsigned int count, unsigned int pos) const; // Copies a substring [pos, pos+count) to character string pointed to by dest. If the requested substring lasts past the end of the string, or if count == npos, the copied substring is [pos, size()). The resulting character string is not null-terminated. 
+    unsigned int copy(char *dest, unsigned int count, unsigned int pos = 0) const; // Copies a substring [pos, pos+count) to character string pointed to by dest. If the requested substring lasts past the end of the string, or if count == npos, the copied substring is [pos, size()). The resulting character string is not null-terminated. 
     /*
     Resizes the string to contain count characters.
     If the current size is less than count, additional characters are appended.
@@ -158,24 +164,49 @@ private:
 
 /*************** Member functions **************/
 
-BasicString::BasicString(const char *s){
-    this->bufferSize = 0;
-    this->bufferCap = 0;
-    this->buffer = nullptr;
-    for(unsigned int i = 0; s[i] != '\0'; ++i) this->push_back(s[i]);
-}
-BasicString::BasicString(const char c, unsigned int count){
-    this->bufferSize = count;
-    this->buffer = nullptr;
+BasicString::BasicString(unsigned int count, char c): buffer(nullptr), bufferSize(count), bufferCap(0){
     this->reserve(count+1);
-    for(unsigned int i = 0; i < count; ++i) this->buffer[i] = c;
-    this->buffer[count] = '\0';
+    for(unsigned int i = 0; i < this->size(); ++i) this->buffer[i] = c;
 }
 
-BasicString::BasicString(const BasicString &other) {
+BasicString::BasicString(const BasicString &other, unsigned int pos, unsigned int count )
+: buffer(nullptr), bufferSize(0), bufferCap(0){
+    if(pos > other.size()) throw std::out_of_range("in  'BasicString(const BasicString &other, unsigned int pos, unsigned int count )' pos is out of range");
+    if(count == npos || pos+ count > other.size()) count = other.size() - pos;
+    this->bufferSize = count;
+    this->reserve(count+1);
+    for(unsigned int i = 0; i < this->size(); ++i) this->buffer[i] = other.at(pos++);
+}
+
+BasicString::BasicString(const char *s)
+: buffer(nullptr), bufferSize(0), bufferCap(0){
+    
+    for(unsigned i = 0; s[i] != '\0'; ++i) this->push_back(s[i]);
+    this->push_back('\0');
+    --this->bufferSize;
+    
+}
+
+BasicString::BasicString(const char *s, unsigned int count)
+: buffer(nullptr), bufferSize(count), bufferCap(0){
+    this->reserve(count+1);
+    for(unsigned int i = 0; s[i] != '\0' && i < count; ++i) this->buffer[i] = s[i]; 
+}
+    
+
+BasicString::BasicString(iterator inputFirst, iterator inputLast)
+: buffer(nullptr), bufferSize(inputLast - inputFirst), bufferCap(0){
+    this->reserve(inputLast - inputFirst + 1);
+    for(unsigned int i = 0; i < this->size() && inputFirst != inputLast; ++i) this->buffer[i] = *(inputFirst++);
+}
+BasicString::BasicString(const char c, unsigned int count)
+: buffer(nullptr), bufferSize(count), bufferCap(0){
+    this->reserve(count+1);
+    for(unsigned int i = 0; i < count; ++i) this->buffer[i] = c;
+}
+
+BasicString::BasicString(const BasicString &other): buffer(nullptr), bufferSize(other.size()), bufferCap(0){
     //Copy Constructor
-    this->buffer = nullptr; 
-    this->bufferSize = other.size();
     this->reserve(other.size()+1);
     for(unsigned int i = 0; i < other.size(); ++i) this->buffer[i] = other.buffer[i];
     this->buffer[other.size()] = '\0';   
@@ -213,13 +244,14 @@ bool operator==(const BasicString &s1, const BasicString &s2){
     
     return true;
 }
-BasicString& operator+(const BasicString &s1, const BasicString &s2){
+BasicString operator+(const BasicString &s1, const BasicString &s2){
     BasicString result(s1);
     result.append(s2);
     return result;
 }
 std::ostream& operator<<(std::ostream &os, const BasicString &s){
     os << s.data();
+    return os;
 }
 std::istream& operator>>(std::istream &is, const BasicString &s){
 
@@ -246,16 +278,17 @@ char BasicString::at(unsigned int idx) const{
 
 /*************** Capacity **************/
 void BasicString::reserve(unsigned int cap) {
+    if(cap > this->max_size()) throw std::length_error("'resize()' error capacity is more than max size");
     char *newBuffer;
     try{
         newBuffer = new char[(sizeof(char)* cap)];
+        for(unsigned int i = 0; i < cap; ++i) newBuffer[i] = '\0';
     } catch (const std::bad_alloc& ba){
         std::cerr << "BasicString reserve(): memory allocation failure: " << ba.what()<<"\n";
     }
 
     if(buffer != nullptr){
         for(unsigned int i = 0 ; i < this->bufferSize; ++i) newBuffer[i] = this->buffer[i];
-        for(unsigned int i = this->bufferSize; i < cap; ++i) newBuffer[i]= '\0';
         delete[] this->buffer;
         this->buffer = nullptr;
     }
@@ -705,6 +738,7 @@ BasicString& BasicString::replace(const iterator first, const iterator last, uns
 } 
 BasicString BasicString::substr(unsigned int pos , unsigned int count) const{
     // Returns a substring [pos, pos+count). If the requested substring extends past the end of the string, or if count == npos, the returned substring is [pos, size()).
+    if(pos > this->size()) throw std::out_of_range("first argument is not valid out of range in 'substr'");
     if(count == npos || pos + count > this->size()) count = this->size() - pos;
     BasicString resultStr; 
     for(unsigned int i = pos; i < pos + count; ++i) resultStr.push_back(this->buffer[i]);
@@ -727,13 +761,18 @@ If the current size is greater than count, the string is reduced to its first co
 The first version initializes new characters to CharT(), the second version initializes new characters to ch. 
 */
 void BasicString::resize(unsigned int count){
-    if(count < 1 || count > this->max_size()) throw std::length_error("resize length error");
+    if(count < 1 || count > this->max_size() || count == npos) throw std::length_error("resize length error");
 
-    char *newBuffer = new char[sizeof(char) * count];
+    
     if(count > this->size()){
-        
+        char *newBuffer ;
+        try{
+            newBuffer = new char[sizeof(char) * count+1];
+            for(unsigned int i = 0; i < count+1; ++i) newBuffer[i] = '\0';
+        } catch (const std::bad_alloc& ba){
+            std::cerr << "BasicString resize(): memory allocation failure: " << ba.what()<<"\n";
+        }
         for(unsigned int i = 0 ; i < this->size(); ++i) newBuffer[i] = this->buffer[i];
-        for(unsigned int i = this->size(); i < count; ++i) newBuffer[i] = '\0';
         delete[] this->buffer;
         this->buffer = newBuffer;
         if(this->bufferCap < count) this->bufferCap = count;
@@ -744,11 +783,18 @@ void BasicString::resize(unsigned int count){
     this->bufferSize = count;
 }
 void BasicString::resize(unsigned int count, char c){
-    if(count < 1 || count > this->max_size()) throw std::length_error("resize length error");
+    if(count < 1 || count > this->max_size() || count == npos) throw std::length_error("resize length error");
 
 
     if(count > this->size()){
-        char *newBuffer = new char[sizeof(char) * count];
+        char *newBuffer ;
+        try{
+            newBuffer = new char[sizeof(char) * count+1];
+            for(unsigned int i = 0; i < count+1; ++i) newBuffer[i] = '\0';
+        } catch (const std::bad_alloc& ba){
+            std::cerr << "BasicString resize(): memory allocation failure: " << ba.what()<<"\n";
+        }
+        
         for(unsigned int i = 0 ; i < this->size(); ++i) newBuffer[i] = this->buffer[i];
         for(unsigned int i = this->size(); i < count; ++i) newBuffer[i] = c;
         delete[] this->buffer;
@@ -768,16 +814,16 @@ void BasicString::swap(BasicString &other) noexcept{
     swap(this->buffer, other.buffer);
 }
 
-unsigned int BasicString::find(const BasicString &str, unsigned int pos = 0) const{
+unsigned int BasicString::find(const BasicString &str, unsigned int pos) const{
     //Finds the first substring equal to str.
 } 
 unsigned int BasicString::find(const char *s, unsigned int pos , unsigned int count) const{
     // Finds the first substring equal to the range [s, s+count). This range may contain null characters.
 } 
-unsigned int BasicString::find(const char *s, unsigned int pos = 0) const{
+unsigned int BasicString::find(const char *s, unsigned int pos ) const{
     // Finds the first substring equal to the character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s). 
 } 
-unsigned int BasicString::find(char c, unsigned int pos = 0) const{
+unsigned int BasicString::find(char c, unsigned int pos) const{
     // Finds the first character ch (treated as a single-character substring by the formal rules below).
 } 
 unsigned int BasicString::rfind(const BasicString &str, unsigned int pos ) const{
@@ -792,28 +838,28 @@ unsigned int BasicString::rfind(const char *s, unsigned int pos ) const{
 unsigned int BasicString::rfind(char c, unsigned int pos ) const{
     //  Finds the last character equal to ch.
 } 
-unsigned int BasicString::findFirstOf(const BasicString &str, unsigned int pos = 0) const{
+unsigned int BasicString::findFirstOf(const BasicString &str, unsigned int pos) const{
     //Finds the first character equal to one of the characters in str.
 } 
 unsigned int BasicString::findFirstOf(const char *s, unsigned int pos , unsigned int count) const{
     // Finds the first character equal to one of the characters in the range [s, s+count). This range can include null characters.
 } 
-unsigned int BasicString::findFirstOf(const char *s, unsigned int pos = 0) const{
+unsigned int BasicString::findFirstOf(const char *s, unsigned int pos ) const{
     // Finds the first character equal to one of the characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s). 
 } 
-unsigned int BasicString::findFirstOf(char c, unsigned int pos = 0) const{
+unsigned int BasicString::findFirstOf(char c, unsigned int pos ) const{
     // Finds the first character equal to ch.
 } 
-unsigned int BasicString::findFirstNotOf(const BasicString &str, unsigned int pos = 0) const{
+unsigned int BasicString::findFirstNotOf(const BasicString &str, unsigned int pos ) const{
     //Finds the first character equal to none of characters in str. 
 } 
 unsigned int BasicString::findFirstNotOf(const char *s, unsigned int pos , unsigned int count) const{
     //  Finds the first character equal to none of characters in range [s, s+count). This range can include null characters.
 } 
-unsigned int BasicString::findFirstNotOf(const char *s, unsigned int pos = 0) const{
+unsigned int BasicString::findFirstNotOf(const char *s, unsigned int pos ) const{
     // Finds the first character equal to none of characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s).
 } 
-unsigned int BasicString::findFirstNotOf(char c, unsigned int pos = 0) const{
+unsigned int BasicString::findFirstNotOf(char c, unsigned int pos ) const{
     // Finds the first character equal to ch.
 } 
 unsigned int BasicString::findLastOf(const BasicString &str, unsigned int pos) const{

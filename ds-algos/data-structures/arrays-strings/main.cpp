@@ -13,7 +13,7 @@ class Tst
 {
 private:
     /* data */
-    std::string h = "hello";
+    BasicString h = "hello";
 public:
     Tst() {}
     ~Tst() {}
@@ -26,7 +26,7 @@ public:
 
 
 template <typename Obj>
-void printVect(const std::string &msg, const Obj &vect){
+void printVect(const BasicString &msg, const Obj &vect){
     cout << msg<<"" ;
     cout << "[";
     for(int i = 0 ; i< vect.size(); i++){
@@ -40,6 +40,69 @@ void printVect(const std::string &msg, const Obj &vect){
 
 
 void string_testConstructorDestructorsAssign(){
+
+    {
+    // string::string()
+    BasicString s;
+    assert(s.empty() && (s.size() == 0));
+  }
+ 
+  {
+    // string::string(size_type count, charT ch)
+    BasicString s(4, '=');
+    std::cout << s << '\n'; // "===="
+  }
+ 
+  {
+    BasicString const other("Exemplary");
+    // string::string(string const& other, size_type pos, size_type count)
+    BasicString s(other, 0, other.size()-1);
+    std::cout << s << '\n'; // "Exemplar"
+  }
+ 
+  {
+    // string::string(charT const* s, size_type count)
+    BasicString s("C-style string", 7);
+    std::cout << s << '\n'; // "C-style"
+  }
+ 
+  {
+    // string::string(charT const* s)
+    BasicString s("C-style\0string");
+    std::cout << s << '\n'; // "C-style"
+  }
+ 
+  {
+    char mutable_c_str[] = "another C-style string";
+    // string::string(InputIt first, InputIt last)
+    BasicString s(std::begin(mutable_c_str)+8, std::end(mutable_c_str)-1);
+    std::cout << s << '\n'; // "C-style string"
+  }
+ 
+  {
+    BasicString const other("Exemplar");
+    BasicString s(other);
+    std::cout << s << '\n'; // "Exemplar"
+  }
+ 
+  {
+    // string::string(string&& str)
+    BasicString s(BasicString("C++ by ") + BasicString("example"));
+    std::cout << s << '\n'; // "C++ by example"
+  }
+ 
+//   {
+//     // string(std::initializer_list<charT> ilist)
+//     BasicString s({ 'C', '-', 's', 't', 'y', 'l', 'e' });
+//     std::cout << s << '\n'; // "C-style"
+//   }
+ 
+  {
+    // overload resolution selects string(InputIt first, InputIt last) [with InputIt = int]
+    // which behaves as if string(size_type count, charT ch) is called
+    BasicString s(3, 'A');
+    std::cout << s << '\n'; // "AAA"
+  }
 
 }
 
@@ -245,15 +308,79 @@ void string_testReplace(){
 }
 
 void string_substr(){
-    
+     BasicString a = "0123456789abcdefghij";
+ 
+    // count is npos, returns [pos, size())
+    BasicString sub1 = a.substr(10);
+    std::cout << sub1 << '\n';
+ 
+    // both pos and pos+count are within bounds, returns [pos, pos+count)
+    BasicString sub2 = a.substr(5, 3);
+    std::cout << sub2 << '\n';
+ 
+    // pos is within bounds, pos+count is not, returns [pos, size()) 
+    BasicString sub4 = a.substr(a.size()-3, 50);
+    std::cout << sub4 << '\n';
+ 
+    try {
+        // pos is out of bounds, throws
+        BasicString sub5 = a.substr(a.size()+3, 50);
+        std::cout << sub5 << '\n';
+    } catch(const std::out_of_range& e) {
+        std::cout << "pos exceeds string size\n";
+    }
 }
 
 void string_copy(){
-    
+    BasicString foo("quuuux");
+    char bar[7]{};
+    foo.copy(bar, sizeof(bar));
+    std::cout << bar << '\n';
 }
 
 void string_resize(){
-    
+    std::cout << "Basic functionality:\n";
+    const unsigned  desired_length(8);
+    BasicString     long_string( "Where is the end?" );
+    BasicString     short_string( "Ha" );
+ 
+    // Shorten
+    std::cout << "Before: \"" << long_string << "\" Size: " <<long_string.size()<<"\n";
+    long_string.resize( desired_length );
+    std::cout << "After: \"" << long_string <<  "\" Size: " <<long_string.size()<<"\n";
+ 
+    // Lengthen
+    std::cout << "Before: \"" << short_string <<  "\" Size: " <<short_string.size()<<"\n";
+    short_string.resize( desired_length, 'a' );
+    std::cout << "After: \"" << short_string <<  "\" Size: " <<short_string.size()<<"\n";
+ 
+    std::cout  << "\nErrors:\n";
+    {
+        BasicString s;    
+ 
+        try {
+            // size is OK, no length_error
+            // (may throw bad_alloc)
+            //s.resize(s.max_size() - 1, 'x');
+        } catch (const std::bad_alloc&) {
+            std::cout << "1. bad alloc\n";
+        }
+ 
+        try {
+            // size is OK, no length_error
+            // (may throw bad_alloc)
+            //s.resize(s.max_size(), 'x');
+        } catch (const std::bad_alloc& exc) {
+            std::cout << "2. bad alloc\n";
+        }
+ 
+        try {
+            // size is BAD, throw length_error
+            s.resize(s.max_size() + 1, 'x');
+        } catch (const std::length_error&) {
+            std::cout << "3. length error\n";
+        }
+     }
 }
 
 
@@ -261,7 +388,17 @@ void string_resize(){
 
 int main(int argc, char **argv){
     string_testInsert();
+    std::cout<<"\n";
     string_testCompare();
+    std::cout<<"\n";
     string_testErase();
+    std::cout<<"\n";
+    string_copy();
+    std::cout<<"\n";
+    string_substr();
+    std::cout<<"\n";
+    string_resize();
+    std::cout<<"\n";
+    string_testConstructorDestructorsAssign();
     return 0;
 }
