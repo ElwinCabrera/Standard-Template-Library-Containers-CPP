@@ -299,9 +299,6 @@ void string_testCompare(){
     }
 }
 
-void string_testEndsStartsWith(){
-    
-}
 
 void string_testReplace(){
     
@@ -383,6 +380,49 @@ void string_resize(){
      }
 }
 
+void print(unsigned int n, BasicString const &s)
+{
+    if (n == s.npos) {
+        std::cout << "not found\n";
+    } else {
+        std::cout << "found: " << s.substr(n) << '\n';
+    }
+}
+void string_find(){
+    unsigned int n;
+    BasicString const s = "This is a string";
+ 
+    // search from beginning of string
+    n = s.find("is");
+    print(n, s);
+ 
+    // search from position 5
+    n = s.find("is", 5);
+    print(n, s);
+ 
+    // find a single character
+    n = s.find('a');
+    print(n, s);
+ 
+    // find a single character
+    n = s.find('q');
+    print(n, s);
+
+    std::cout << "\n";
+    // search backwards from end of string
+    n = s.rfind("is");
+    print(n, s);
+    // search backwards from position 4
+    n = s.rfind("is", 4);
+    print(n, s);
+    // find a single character
+    n = s.rfind('s');
+    print(n, s);
+    // find a single character
+    n = s.rfind('q');
+    print(n, s);
+}
+
 
 
 
@@ -400,5 +440,7 @@ int main(int argc, char **argv){
     string_resize();
     std::cout<<"\n";
     string_testConstructorDestructorsAssign();
+    std::cout<<"\n";
+    string_find();
     return 0;
 }
