@@ -67,7 +67,7 @@ public:
     BasicString& insert(unsigned int idx, const BasicString &str, unsigned int index_str, unsigned int count); // Inserts a string, obtained by str.substr(index_str, count) at the position index
     iterator insert(iterator pos, char c); // Inserts character ch before the character pointed by pos
     void insert(iterator pos, unsigned int count, char c); // Inserts count copies of character ch before the element (if any) pointed by pos
-    BasicString& erase(unsigned int idx , unsigned int count ); //Removes min(count, size() - index) characters starting at index.
+    BasicString& erase(unsigned int idx , unsigned int count = npos ); //Removes min(count, size() - index) characters starting at index.
     iterator erase(iterator pos);
     iterator erase(iterator first, iterator last); // Removes the characters in the range [first, last).
     void push_back(char c);
@@ -413,14 +413,13 @@ void BasicString::insert(iterator pos, unsigned int count, char c) {
 
 BasicString& BasicString::erase(unsigned int idx , unsigned int count ){
     //Removes min(count, size() - index) characters starting at index.
+    if(count == npos) count = this->size() - idx;
     count = std::min(count, this->size() - idx);
-    for(unsigned int i = idx; i< idx+count; ++i) this->buffer[i] = '\0';
-    unsigned int i1 = idx;
-    unsigned int i2 = idx + count;
+    unsigned int idxFast = idx + count;
+    while(idxFast < this->size()) this->buffer[idx++] = this->buffer[idxFast++];
     
-    while(i2 < this->bufferSize) this->buffer[i1++] = buffer[i2++];
-    for(unsigned int i = idx + count; i < this->bufferSize; ++i) this->buffer[i] = '\0';
-    this->bufferSize -= count; 
+    this->resize(this->bufferSize - count);
+     
 
     return *this;
 } 
@@ -437,20 +436,14 @@ BasicString::iterator BasicString::erase(iterator pos){
 BasicString::iterator BasicString::erase(iterator first, iterator last){
     // Removes the characters in the range [first, last).
     
-    unsigned int count = 0; 
-    for(auto it = first; it != last; ++it) {
-        *(it) = '\0';
-        ++count;
-    }
-    auto left = first;
-    auto right = last+1;
-    while(last != this->end()) {
-        *left = *right;
-        left++;
-        right++;
-    }
-    this->bufferSize -= count;
-    return first;
+    iterator result = first;
+    while(last != this->end()) *(first++) = *(last++);
+    
+    while (first != this->end()) *(first++) = '\0';
+    
+    
+    this->bufferSize -= (first - last);
+    return result;
     
 } 
 void BasicString::push_back(char c){
@@ -509,6 +502,7 @@ BasicString& BasicString::operator+= (const char *s){
 
 int BasicString::compare(const BasicString &str) const{
     //Compares this string to str.
+    
     unsigned int size = std::min(this->size(), str.size());
 
     for(unsigned int i = 0; i < size; ++i) {
@@ -523,7 +517,7 @@ int BasicString::compare(const BasicString &str) const{
 } 
 int BasicString::compare(unsigned int pos1, unsigned int count1, const BasicString &str) const{
     //  Compares a [pos1, pos1+count1) substring of this string to str. If count1 > size() - pos1 the substring is [pos1, size()).
-    if(count1 > this->size() - pos1) count1 = this->size();
+    if(count1 > this->size() - pos1) count1 = this->size() - pos1;
     unsigned int size = std::min(count1, str.size());
 
     for(unsigned int i = 0; i < size; ++i) {
@@ -538,7 +532,12 @@ int BasicString::compare(unsigned int pos1, unsigned int count1, const BasicStri
 } 
 int BasicString::compare(unsigned int pos1, unsigned int count1, const BasicString &str, unsigned int pos2, unsigned int count2) const{
     // Compares a [pos1, pos1+count1) substring of this string to a substring [pos2, pos2+count2) of str. If count1 > size() - pos1 the first substring is [pos1, size()). Likewise, count2 > str.size() - pos2 the second substring is [pos2, str.size()).
-    
+    if(count1 > this->size() - pos1) count1 = this->size() - pos1;
+    while(pos1 < count1 && pos2 < count2){
+        int diff = this->buffer[pos1++] - str.at(pos2++);
+        if(diff < 0 || diff > 0) return diff;  
+    }
+    return 0;
 } 
 int BasicString::compare(const char *s) const{
     //  Compares this string to the null-terminated character sequence beginning at the character pointed to by s with length Traits::length(s).
@@ -555,7 +554,7 @@ int BasicString::compare(const char *s) const{
 } 
 int BasicString::compare(unsigned int pos1, unsigned int count1, const char *s) const{
     // Compares a [pos1, pos1+count1) substring of this string to the null-terminated character sequence beginning at the character pointed to by s with length Traits::length(s) If count1 > size() - pos1 the substring is [pos1, size()).
-    if(count1 > this->size() - pos1) count1 = this->size();
+    if(count1 > this->size() - pos1) count1 = this->size() - pos1;
     unsigned int idx = 0;
 
     while(s[idx] != '\0' && pos1 < count1 ){
@@ -570,7 +569,7 @@ int BasicString::compare(unsigned int pos1, unsigned int count1, const char *s) 
 } 
 int BasicString::compare(unsigned int pos1, unsigned int count1, const char *s, unsigned int count2){
     // Compares a [pos1, pos1+count1) substring of this string to the characters in the range [s, s + count2). If count1 > size() - pos1 the substring is [pos1, size()). (Note: the characters in the range [s, s + count2) may include null characters.)
-    if(count1 > this->size() - pos1) count1 = this->size();
+    if(count1 > this->size() - pos1) count1 = this->size() - pos1;
     unsigned int size = std::min(count1, count2);
     for(unsigned int i = 0; i < size; ++i) {
         int diff = this->buffer[pos1++] - s[i];
@@ -626,9 +625,9 @@ BasicString& BasicString::replace(unsigned int pos, unsigned int count, const Ba
     //if pos+ count is more than the this string length then we just append str starting from pos in this string 
     
     if(pos > this->size()) return *this; // not possible should return error
-    if(count == 0) return this->insert(pos, str);
+    if(count == 0) this->insert(pos, str);
     
-    int charsToEndCount = this->size() - pos;
+    unsigned int charsToEndCount = this->size() - pos;
     unsigned int idx = 0;
     unsigned int end = pos + count;
     
@@ -661,22 +660,98 @@ BasicString& BasicString::replace(const iterator first, const iterator last, con
     return *this;
 }  
 BasicString& BasicString::replace(unsigned int pos, unsigned int count, const BasicString &str, unsigned int pos2, unsigned int count2){
-    // substring [pos2, pos2 + count2) of str, except if count2==npos or if would extend past str.size(), [pos2, str.size()) is used.
+    //count the the # of characters to replace [pos, pos+ count) if count is more than this->size() - pos then we replace all characters starting from [pos, this->size())
+    // count2 is the # of characters to copy substring [pos2, pos2 + count2) of str, except if count2==npos or if would extend past str.size(), [pos2, str.size()) is used.
+    if(count2 > str.size() || count2 == npos) count2 = str.size() - pos2;
+    if(count == 0) this->insert(pos, str, pos2, count2);
+    if(count >= this->size()) this->resize((unsigned) std::max(pos, pos+count2));
+    
+    unsigned int idx1 = pos;
+    unsigned int idx2 = pos2;
+    
+    if(pos + count >= this->size()) while(idx2 < pos2 + count2) this->buffer[idx1++] = str.at(idx2++);
+    else {
+        unsigned int c = 0;
+        while(idx1 < pos+count && idx2 < pos2 + count2) this->buffer[idx1++] = str.at(idx2++);
+        if(idx2 < pos2 + count2) this->insert(idx2, str);
+    }
+    return *this;
+    
 }  
 BasicString& BasicString::replace(unsigned int pos, unsigned int count, const char *cstr, unsigned int count2){
     // characters in the range [cstr, cstr + count2);
+    //if(count2 > str.size() || count2 == npos) count2 = str.size() - pos2;
+    if(count == 0) this->insert(pos, cstr, count2);
+    if(pos + count >= this->size()) this->resize((unsigned) std::max(pos, pos + count2));
+    
+    unsigned int idx1 = pos;
+    unsigned int idx2 = 0;
+    
+    if(pos + count >= this->size()) while(idx2 <  count2) this->buffer[idx1++] = cstr[idx2++];
+    else {
+        while(idx1 < pos+count && idx2 < count2) this->buffer[idx1++] = cstr[idx2++];
+        if(idx2 < count2) this->insert(idx2, cstr);
+    }
+    return *this;
 } 
 BasicString& BasicString::replace(const iterator first, const iterator last, const char *cstr, unsigned int count2){
     // characters in the range [cstr, cstr + count2);
+    unsigned int replCount = last - first;
+    unsigned int startIdx = first - this->begin();
+    unsigned int i = 0;
+    while(cstr[i] != '\0') cstr[i++];
+    if(i < count2) count2 = i;
+    if(first == last) this->insert(startIdx,cstr);
+    if(startIdx + replCount >= this->size()) this->resize(std::max(startIdx, startIdx+count2));
+
+    unsigned int idx1 = startIdx;
+    unsigned int idx2 = 0;
+    
+    if(startIdx + replCount >= this->size()) while(idx2 <  count2) this->buffer[idx1++] = cstr[idx2++];
+    else {
+        while(idx1 < startIdx+replCount && idx2 < count2) this->buffer[idx1++] = cstr[idx2++];
+        if(idx2 < count2) this->insert(idx2, cstr);
+    }
+    return *this;
+
 } 
 BasicString& BasicString::replace(unsigned int pos, unsigned int count, const char *cstr){
     // characters in the range [cstr, cstr + Traits::length(cstr));
+    if(count == 0) this->insert(pos, cstr);
+    unsigned int cStrSize = 0;
+    while(cstr[cStrSize] != '\0') cstr[cStrSize++];
+    if(pos + count >= this->size()) this->resize((unsigned) std::max(pos, pos + cStrSize));
+    
+    unsigned int idx1 = pos;
+    unsigned int idx2 = 0;
+    
+    if(pos + count >= this->size()) while(cstr[idx2] != '\0') this->buffer[idx1++] = cstr[idx2++];
+    else {
+        while(idx1 < pos+count && cstr[idx2] != '\0') this->buffer[idx1++] = cstr[idx2++];
+        if(cstr[idx2] != '\0') this->insert(idx2, cstr);
+    }
+    return *this;
 } 
 BasicString& BasicString::replace(const iterator first, const iterator last, const char *cstr){
     // characters in the range [cstr, cstr + Traits::length(cstr));
+    unsigned int count2 = 0;
+    while(cstr[count2] != '\0') cstr[count2++];
+    return this->replace(first, last, cstr, count2);
 } 
 BasicString& BasicString::replace(unsigned int pos, unsigned int count, unsigned int count2, char c){
     // count2 copies of character ch;
+    
+    if(count == 0) this->insert(pos, count, c);
+    if(pos + count >= this->size()) this->resize((unsigned) std::max(pos, pos + count2));
+    
+    unsigned int idx1 = pos;
+    
+    if(pos + count >= this->size()) while(idx1 < pos +count2) this->buffer[idx1++] = c;
+    else {
+        while(idx1 < pos+count && idx1 < pos + count2) this->buffer[idx1++] = c;
+        //if(idx1 < pos +count2) this->insert(idx2, cstr);
+    }
+    return *this;
 } 
 BasicString& BasicString::replace(const iterator first, const iterator last, unsigned int count2, char c){
     // count2 copies of character ch;
@@ -700,9 +775,9 @@ The first version initializes new characters to CharT(), the second version init
 void BasicString::resize(unsigned int count){
     if(count < 1 || count > this->max_size()) throw std::length_error("resize length error");
 
-
+    char *newBuffer = new char[sizeof(char) * count];
     if(count > this->size()){
-        char *newBuffer = new char[sizeof(char) * count];
+        
         for(unsigned int i = 0 ; i < this->size(); ++i) newBuffer[i] = this->buffer[i];
         for(unsigned int i = this->size(); i < count; ++i) newBuffer[i] = '\0';
         delete[] this->buffer;

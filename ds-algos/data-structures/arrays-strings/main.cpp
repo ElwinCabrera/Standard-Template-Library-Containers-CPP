@@ -98,7 +98,22 @@ void string_testInsert(){
 }
 
 void string_testErase(){
+    BasicString s("This is an example");
+    std::cout << s << '\n';
+ 
+    s.erase(0, 5); // Erase "This "
+    std::cout << s << '\n';
+ 
+    s.erase(std::find(s.begin(), s.end(), ' ')); // Erase ' '
+    std::cout << s << '\n';
+
     
+    s.erase(s.begin()+2, s.begin()+4); // erase 'an'
+    std::cout << s << '\n';
+
+    //s.erase(s.find(' ')); // Trim from ' ' to the end of the string
+    s.erase(2); // Trim from ' ' to the end of the string
+    std::cout << s << '\n';
 }
 
 void string_testAppend(){
@@ -247,5 +262,6 @@ void string_resize(){
 int main(int argc, char **argv){
     string_testInsert();
     string_testCompare();
+    string_testErase();
     return 0;
 }
