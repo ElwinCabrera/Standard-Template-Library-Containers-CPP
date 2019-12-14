@@ -60,7 +60,7 @@ public:
     unsigned int max_size() const { return UINT_MAX; }
     void reserve(unsigned int cap);
     unsigned int capacity() const { return bufferCap; }
-    void shrinkToFit();
+    void shrink_to_fit();
 
 
 
@@ -92,12 +92,12 @@ public:
     int compare(const char *s) const; //  Compares this string to the null-terminated character sequence beginning at the character pointed to by s with length Traits::length(s).
     int compare(unsigned int pos1, unsigned int count1, const char *s) const; // Compares a [pos1, pos1+count1) substring of this string to the null-terminated character sequence beginning at the character pointed to by s with length Traits::length(s) If count1 > size() - pos1 the substring is [pos1, size()).
     int compare(unsigned int pos1, unsigned int count1, const char *s, unsigned int count2); //  Compares a [pos1, pos1+count1) substring of this string to the characters in the range [s, s + count2). If count1 > size() - pos1 the substring is [pos1, size()). (Note: the characters in the range [s, s + count2) may include null characters.)
-    bool startsWith(BasicString &str) const; // a string str. (new in c++20)
-    bool startsWith(char c) const noexcept; //a single character c. (new in c++20)
-    bool startsWith(const char *s) const; //a null-terminated character string s. (new in c++20)
-    bool endsWith(BasicString &str) const; // a string str. (new in c++20)
-    bool endsWith(char c) const noexcept; //a single character c. (new in c++20)
-    bool endsWith(const char *s) const; //a null-terminated character string s. (new in c++20)
+    bool starts_with(BasicString &str) const; // a string str. (new in c++20)
+    bool starts_with(char c) const noexcept; //a single character c. (new in c++20)
+    bool starts_with(const char *s) const; //a null-terminated character string s. (new in c++20)
+    bool ends_with(BasicString &str) const; // a string str. (new in c++20)
+    bool ends_with(char c) const noexcept; //a single character c. (new in c++20)
+    bool ends_with(const char *s) const; //a null-terminated character string s. (new in c++20)
     BasicString& replace(unsigned int pos, unsigned int count, const BasicString &str); //string str
     BasicString& replace(const iterator first, const iterator last, const BasicString &str); //string str 
     BasicString& replace(unsigned int pos, unsigned int count, const BasicString &str, unsigned int pos2, unsigned int count2);  // substring [pos2, pos2 + count2) of str, except if count2==npos or if would extend past str.size(), [pos2, str.size()) is used.
@@ -132,22 +132,22 @@ public:
     unsigned int rfind(const char *s, unsigned int pos , unsigned int count) const; // Finds the last substring equal to the range [s, s+count). This range can include null characters. 
     unsigned int rfind(const char *s, unsigned int pos = npos) const; // Finds the last substring equal to the character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s). 
     unsigned int rfind(char c, unsigned int pos = npos) const; //  Finds the last character equal to ch.
-    unsigned int findFirstOf(const BasicString &str, unsigned int pos = 0) const; //Finds the first character equal to one of the characters in str.
-    unsigned int findFirstOf(const char *s, unsigned int pos , unsigned int count) const; // Finds the first character equal to one of the characters in the range [s, s+count). This range can include null characters.
-    unsigned int findFirstOf(const char *s, unsigned int pos = 0) const; // Finds the first character equal to one of the characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s). 
-    unsigned int findFirstOf(char c, unsigned int pos = 0) const; // Finds the first character equal to ch.
-    unsigned int findFirstNotOf(const BasicString &str, unsigned int pos = 0) const; //Finds the first character equal to none of characters in str. 
-    unsigned int findFirstNotOf(const char *s, unsigned int pos , unsigned int count) const; //  Finds the first character equal to none of characters in range [s, s+count). This range can include null characters.
-    unsigned int findFirstNotOf(const char *s, unsigned int pos = 0) const; // Finds the first character equal to none of characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s).
-    unsigned int findFirstNotOf(char c, unsigned int pos = 0) const; // Finds the first character equal to ch.
-    unsigned int findLastOf(const BasicString &str, unsigned int pos) const; //Finds the last character equal to one of the characters in str.
-    unsigned int findLastOf(const char *s, unsigned int pos , unsigned int count) const; // Finds the last character equal to one of the characters in the range [s, s+count). This range can include null characters.
-    unsigned int findLastOf(const char *s, unsigned int pos ) const; // Finds the last character equal to one of the characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s). 
-    unsigned int findLastOf(char c, unsigned int pos ) const; // Finds the last character equal to ch.
-    unsigned int findLastNotOf(const BasicString &str, unsigned int pos ) const; //Finds the last character equal to none of characters in str. 
-    unsigned int findLastNotOf(const char *s, unsigned int pos , unsigned int count) const; //  Finds the last character equal to none of characters in range [s, s+count). This range can include null characters.
-    unsigned int findLastNotOf(const char *s, unsigned int pos ) const; // Finds the last character equal to none of characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s).
-    unsigned int findLastNotOf(char c, unsigned int pos ) const; // Finds the last character equal to ch.
+    unsigned int find_first_of(const BasicString &str, unsigned int pos = 0) const; //Finds the first character equal to one of the characters in str.
+    unsigned int find_first_of(const char *s, unsigned int pos , unsigned int count) const; // Finds the first character equal to one of the characters in the range [s, s+count). This range can include null characters.
+    unsigned int find_first_of(const char *s, unsigned int pos = 0) const; // Finds the first character equal to one of the characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s). 
+    unsigned int find_first_of(char c, unsigned int pos = 0) const; // Finds the first character equal to ch.
+    unsigned int find_first_not_of(const BasicString &str, unsigned int pos = 0) const; //Finds the first character equal to none of characters in str. 
+    unsigned int find_first_not_of(const char *s, unsigned int pos , unsigned int count) const; //  Finds the first character equal to none of characters in range [s, s+count). This range can include null characters.
+    unsigned int find_first_not_of(const char *s, unsigned int pos = 0) const; // Finds the first character equal to none of characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s).
+    unsigned int find_first_not_of(char c, unsigned int pos = 0) const; // Finds the first character equal to ch.
+    unsigned int find_last_of(const BasicString &str, unsigned int pos = npos) const; //Finds the last character equal to one of the characters in str.
+    unsigned int find_last_of(const char *s, unsigned int pos , unsigned int count) const; // Finds the last character equal to one of the characters in the range [s, s+count). This range can include null characters.
+    unsigned int find_last_of(const char *s, unsigned int pos = npos) const; // Finds the last character equal to one of the characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s). 
+    unsigned int find_last_of(char c, unsigned int pos = npos) const; // Finds the last character equal to ch.
+    unsigned int find_last_not_of(const BasicString &str, unsigned int pos ) const; //Finds the last character equal to none of characters in str. 
+    unsigned int find_last_not_of(const char *s, unsigned int pos , unsigned int count) const; //  Finds the last character equal to none of characters in range [s, s+count). This range can include null characters.
+    unsigned int find_last_not_of(const char *s, unsigned int pos ) const; // Finds the last character equal to none of characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s).
+    unsigned int find_last_not_of(char c, unsigned int pos ) const; // Finds the last character equal to ch.
 
     //operator+ ? 
 
@@ -296,7 +296,7 @@ void BasicString::reserve(unsigned int cap) {
     this->bufferCap = cap;
 }
 
-void BasicString::shrinkToFit() {
+void BasicString::shrink_to_fit() {
     for(auto it = this->end(); it< this->begin() + bufferCap; ++it) {
         *it = '\0';
         it = nullptr;
@@ -614,40 +614,40 @@ int BasicString::compare(unsigned int pos1, unsigned int count1, const char *s, 
     
     return 0;
 } 
-bool BasicString::startsWith(BasicString &str) const{
+bool BasicString::starts_with(BasicString &str) const{
     // a string str. (new in c++20)
-    if(this->bufferSize < str.size()) return false;
+    if(this->size() < str.size()) return false;
     for(unsigned int i = 0 ; i < str.size(); ++i) if(this->buffer[i] != str.at(i)) return false;
     return true;
 } 
-bool BasicString::startsWith(char c) const noexcept{
+bool BasicString::starts_with(char c) const noexcept{
     //a single character c. (new in c++20)
     return c == this->buffer[0];
 } 
-bool BasicString::startsWith(const char *s) const{
+bool BasicString::starts_with(const char *s) const{
     //a null-terminated character string s. (new in c++20)
     for(unsigned int i = 0 ; s[i] != '\0'; ++i) {
         if(i > this->bufferSize || this->buffer[i] != s[i]) return false;
     }
     return true;
 } 
-bool BasicString::endsWith(BasicString &str) const{
+bool BasicString::ends_with(BasicString &str) const{
     // a string str. (new in c++20)
-    if(this->bufferSize > str.size()) return false;
-    unsigned int idx1 = this->bufferSize -1;
-    for(unsigned int i = str.size()-1; i >= 0; --i) if(str.at(i) != this->buffer[idx1--]) return false;
+    if(this->size() < str.size()) return false;
+    unsigned int idx1 = this->size() -1;
+    for(unsigned int i = str.size()-1; i != npos; --i) if(str.at(i) != this->buffer[idx1--]) return false;
     return true;
 } 
-bool BasicString::endsWith(char c) const noexcept{
+bool BasicString::ends_with(char c) const noexcept{
     //a single character c. (new in c++20)
-    return this->buffer[this->bufferSize-1] == c;
+    return this->buffer[this->size()-1] == c;
 } 
-bool BasicString::endsWith(const char *s) const{
+bool BasicString::ends_with(const char *s) const{
     //a null-terminated character string s. (new in c++20)
     unsigned int count =0;
     for(unsigned int i =0; i < s[i] != '\0'; ++i ) count++;
-    if(this->bufferSize < count) return false;
-    unsigned int idx1 = this->bufferSize-1;
+    if(this->size() < count) return false;
+    unsigned int idx1 = this->size()-1;
     for(unsigned int i = count-1; i >=0; --i) if(this->buffer[idx1--] != s[i]) return false;
     return true;
 }
@@ -927,54 +927,164 @@ unsigned int BasicString::rfind(char c, unsigned int pos ) const{
     }
     return npos;
 } 
-unsigned int BasicString::findFirstOf(const BasicString &str, unsigned int pos) const{
+
+
+unsigned int BasicString::find_first_of(const BasicString &str, unsigned int pos) const{
     //Finds the first character equal to one of the characters in str.
+    if(pos >= this->size()) throw std::length_error("pos is too large");
+    for(unsigned i = pos; i < this->size(); ++i){
+        for(unsigned i2 = 0; i2 < str.size(); ++i2 ) if(this->at(i) == str.at(i2)) return i;
+    }
+    return npos;
 } 
-unsigned int BasicString::findFirstOf(const char *s, unsigned int pos , unsigned int count) const{
+unsigned int BasicString::find_first_of(const char *s, unsigned int pos , unsigned int count) const{
     // Finds the first character equal to one of the characters in the range [s, s+count). This range can include null characters.
+    if(pos >= this->size()) throw std::length_error("pos is too large");
+    for(unsigned i = pos; i < this->size(); ++i){
+        for(unsigned i2 = 0; i2 < count; ++i2 ) if(this->at(i) == s[i2]) return i;
+    }
+    return npos;
 } 
-unsigned int BasicString::findFirstOf(const char *s, unsigned int pos ) const{
+unsigned int BasicString::find_first_of(const char *s, unsigned int pos ) const{
     // Finds the first character equal to one of the characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s). 
+    if(pos >= this->size()) throw std::length_error("pos is too large");
+    for(unsigned i = pos; i < this->size(); ++i){
+        for(unsigned i2 = 0; s[i2] != '\0'; ++i2 ) if(this->at(i) == s[i2]) return i;
+    }
+    return npos;
 } 
-unsigned int BasicString::findFirstOf(char c, unsigned int pos ) const{
+unsigned int BasicString::find_first_of(char c, unsigned int pos ) const{
     // Finds the first character equal to ch.
+    if(pos >= this->size()) throw std::length_error("pos is too large");
+    for(unsigned i = pos; i < this->size(); ++i){
+        if(this->at(i) == c) return i;
+    }
+    return npos;
 } 
-// unsigned int BasicString::findFirstNotOf(const BasicString &str, unsigned int pos ) const{
-//     //Finds the first character equal to none of characters in str. 
-// } 
-// unsigned int BasicString::findFirstNotOf(const char *s, unsigned int pos , unsigned int count) const{
-//     //  Finds the first character equal to none of characters in range [s, s+count). This range can include null characters.
-// } 
-// unsigned int BasicString::findFirstNotOf(const char *s, unsigned int pos ) const{
-//     // Finds the first character equal to none of characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s).
-// } 
-// unsigned int BasicString::findFirstNotOf(char c, unsigned int pos ) const{
-//     // Finds the first character equal to ch.
-// } 
-// unsigned int BasicString::findLastOf(const BasicString &str, unsigned int pos) const{
-//     //Finds the last character equal to one of the characters in str.
-// } 
-// unsigned int BasicString::findLastOf(const char *s, unsigned int pos , unsigned int count) const{
-//     // Finds the last character equal to one of the characters in the range [s, s+count). This range can include null characters.
-// } 
-// unsigned int BasicString::findLastOf(const char *s, unsigned int pos ) const{
-//     // Finds the last character equal to one of the characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s). 
-// } 
-// unsigned int BasicString::findLastOf(char c, unsigned int pos ) const{
-//     // Finds the last character equal to ch.
-// } 
-// unsigned int BasicString::findLastNotOf(const BasicString &str, unsigned int pos ) const{
-//     //Finds the last character equal to none of characters in str. 
-// } 
-// unsigned int BasicString::findLastNotOf(const char *s, unsigned int pos , unsigned int count) const{
-//     //  Finds the last character equal to none of characters in range [s, s+count). This range can include null characters.
-// } 
-// unsigned int BasicString::findLastNotOf(const char *s, unsigned int pos ) const{
-//     // Finds the last character equal to none of characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s).
-// } 
-// unsigned int BasicString::findLastNotOf(char c, unsigned int pos ) const{
-//     // Finds the last character equal to ch.
-// } 
+unsigned int BasicString::find_first_not_of(const BasicString &str, unsigned int pos ) const{
+    //Finds the first character equal to none of characters in str. 
+    if(pos >= this->size()) pos = this->size()-1;
+    for(unsigned i = pos; i < this->size(); ++i){
+        unsigned idx2 = 0;
+        while(idx2 < str.size()) {
+            if(str.at(idx2)== this->at(i)) break;
+            ++idx2;
+        }
+        if(idx2 >= str.size()) return i;
+    }
+    return npos;
+} 
+unsigned int BasicString::find_first_not_of(const char *s, unsigned int pos , unsigned int count) const{
+    //  Finds the first character equal to none of characters in range [s, s+count). This range can include null characters.
+    if(pos >= this->size()) pos = this->size()-1;
+    for(unsigned i = pos; i < this->size(); ++i){
+        unsigned idx2 = 0;
+        while(idx2 < count) {
+            if(s[idx2] == this->at(i)) break;
+            ++idx2;
+        }
+        if(idx2 >= count) return i;
+    }
+    return npos;
+} 
+unsigned int BasicString::find_first_not_of(const char *s, unsigned int pos ) const{
+    // Finds the first character equal to none of characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s).
+    if(pos >= this->size()) pos = this->size()-1;
+    for(unsigned i = pos; i < this->size(); ++i){
+        unsigned idx2 = 0;
+        while(s[idx2] != '\0') {
+            if(s[idx2] == this->at(i)) break;
+            ++idx2;
+        }
+        if(s[idx2] == '\0') return i;
+    }
+    return npos;
+} 
+unsigned int BasicString::find_first_not_of(char c, unsigned int pos ) const{
+    // Finds the first character equal to ch.
+    if(pos >= this->size()) pos = this->size()-1;
+    for(unsigned i = pos; i< this->size(); ++i) if(this->at(i) != c) return i;
+    return npos;
+} 
+unsigned int BasicString::find_last_of(const BasicString &str, unsigned int pos) const{
+    //Finds the last character equal to one of the characters in str.
+    if(pos >= this->size() || pos == npos) pos = this->size()-1;
+    for(unsigned i = pos; i != npos; --i){
+        for(unsigned i2 = 0; i2 < str.size(); ++i2 ) if(this->at(i) == str.at(i2)) return i;
+    }
+    return npos;
+} 
+unsigned int BasicString::find_last_of(const char *s, unsigned int pos , unsigned int count) const{
+    // Finds the last character equal to one of the characters in the range [s, s+count). This range can include null characters.
+    if(pos >= this->size() || pos == npos) pos = this->size()-1;
+    for(unsigned i = pos; i != npos; --i){
+        for(unsigned i2 = 0; i2 < count; ++i2 ) if(this->at(i) == s[i2]) return i;
+    }
+    return npos;
+} 
+unsigned int BasicString::find_last_of(const char *s, unsigned int pos ) const{
+    // Finds the last character equal to one of the characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s). 
+    if(pos >= this->size() || pos == npos) pos = this->size()-1;
+    for(unsigned i = pos; i != npos; --i){
+        for(unsigned i2 = 0; s[i2] != '\0'; ++i2 ) if(this->at(i) == s[i2]) return i;
+    }
+    return npos;
+} 
+unsigned int BasicString::find_last_of(char c, unsigned int pos ) const{
+    // Finds the last character equal to ch.
+    if(pos >= this->size() || pos == npos) pos = this->size()-1;
+    for(unsigned i = pos; i != npos; --i){
+        if(this->at(i) == c) return i;
+    }
+    return npos;
+}
+
+
+unsigned int BasicString::find_last_not_of(const BasicString &str, unsigned int pos ) const{
+    //Finds the last character equal to none of characters in str. 
+    if(pos >= this->size() || pos == npos) pos = this->size()-1;
+    for(unsigned i = pos; i != npos; --i){
+        unsigned idx2 = 0;
+        while(idx2 < str.size()) {
+            if(str.at(idx2)== this->at(i)) break;
+            ++idx2;
+        }
+        if(idx2 >= str.size()) return i;
+    }
+    return npos;
+} 
+unsigned int BasicString::find_last_not_of(const char *s, unsigned int pos , unsigned int count) const{
+    //  Finds the last character equal to none of characters in range [s, s+count). This range can include null characters.
+    if(pos >= this->size() || pos == npos) pos = this->size()-1;
+    for(unsigned i = pos; i != npos; --i){
+        unsigned idx2 = 0;
+        while(idx2 < count) {
+            if(s[idx2] == this->at(i)) break;
+            ++idx2;
+        }
+        if(idx2 >= count) return i;
+    }
+    return npos;
+} 
+unsigned int BasicString::find_last_not_of(const char *s, unsigned int pos ) const{
+    // Finds the last character equal to none of characters in character string pointed to by s. The length of the string is determined by the first null character using Traits::length(s).
+    if(pos >= this->size() || pos == npos) pos = this->size()-1;
+    for(unsigned i = pos; i != npos; --i){
+        unsigned idx2 = 0;
+        while(s[idx2] != '\0') {
+            if(s[idx2] == this->at(i)) break;
+            ++idx2;
+        }
+        if(s[idx2] == '\0') return i;
+    }
+    return npos;
+} 
+unsigned int BasicString::find_last_not_of(char c, unsigned int pos ) const{
+    // Finds the last character equal to ch.
+    if(pos >= this->size() || pos == npos) pos = this->size()-1;
+    for(unsigned i = pos; i != npos; --i) if(this->at(i) != c) return i;
+    return npos;
+} 
 
 // namespace myStrImp{
 //     typename BasicString String;

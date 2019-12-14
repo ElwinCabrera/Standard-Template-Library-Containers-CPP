@@ -1,9 +1,11 @@
 #include <iostream>
 #include <cassert>
 #include <string>
+#include <sstream>
 //#include "my-vector.cpp"
 #include "my-string.cpp"
 using std::cout;
+using std::stringstream;
 using std::endl;
 
 /*********************************** TESTS AND DEBUG ***********************************************/
@@ -23,6 +25,19 @@ public:
     } 
 };
 
+template <typename PrefixType>
+void test_prefix_print(const BasicString& str, PrefixType prefix)
+{
+    std::cout << '\'' << str << "' starts with '" << prefix << "': " <<
+        str.starts_with(prefix) << '\n';
+}
+
+template <typename SuffixType>
+void test_suffix_print(const BasicString& str, SuffixType suffix)
+{
+    std::cout << '\'' << str << "' ends with '" << suffix << "': " <<
+        str.ends_with(suffix) << '\n';
+}
 
 
 template <typename Obj>
@@ -299,6 +314,28 @@ void string_testCompare(){
     }
 }
 
+void string_test_startsEndsWith(){
+    std::boolalpha(std::cout);    
+    auto helloWorld = BasicString("hello world");
+ 
+    test_prefix_print(helloWorld, BasicString("hello"));
+ 
+    test_prefix_print(helloWorld, BasicString("goodby"));
+ 
+    test_prefix_print(helloWorld, 'h');
+ 
+    test_prefix_print(helloWorld, 'x');
+
+    std::cout << "\n";
+
+    test_suffix_print(helloWorld, BasicString("world"));
+ 
+    test_suffix_print(helloWorld, BasicString("goodby"));
+ 
+    test_suffix_print(helloWorld, 'd');
+ 
+    test_suffix_print(helloWorld, 'x');
+}
 
 void string_testReplace(){
     
@@ -421,26 +458,73 @@ void string_find(){
     // find a single character
     n = s.rfind('q');
     print(n, s);
+
+    std::cout << "\n";
+    BasicString str = BasicString("Hello World!");
+ 
+    // strings and chars to search for
+    BasicString search_str = BasicString("Good");
+    const char* search_cstr = "Good Bye!";
+ 
+    std::cout << str.find_first_of(search_str,5) << '\n';
+    std::cout << str.find_first_of(search_str, 5) << '\n';
+    std::cout << str.find_first_of(search_cstr) << '\n';
+    std::cout << str.find_first_of(search_cstr, 0, 4) << '\n';
+    // 'x' is not in "Hello World', thus it will return std::string::npos
+    std::cout << str.find_first_of('x') << '\n';
+
+    std::cout << "\n";
+
+     BasicString to_search = "Some data with %MACROS to substitute";
+ 
+    std::cout << "Before: " << to_search << '\n';
+ 
+    auto pos = to_search.npos;
+    while ((pos = to_search.find('%')) != to_search.npos) {
+        // Permit uppercase letters, lowercase letters and numbers in macro names
+        const auto after = to_search.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", pos + 1);
+ 
+        // Now to_search[pos] == '%' and to_search[after] == ' ' (after the 'S')
+ 
+        if(after != to_search.npos)
+            to_search.replace(pos, after - pos, "some very nice macros");
+    }
+ 
+    std::cout << "After: " << to_search << '\n';
+
+    std::cout <<"\n";
+     const BasicString path="/root/config";
+    auto const pos2=path.find_last_of('/');
+    const auto leaf=path.substr(pos2+1);
+ 
+    std::cout << leaf << '\n';
+
+
 }
 
 
 
 
+
 int main(int argc, char **argv){
+    std::cout<<"\nINSERT TESTS:\n";
     string_testInsert();
-    std::cout<<"\n";
+    std::cout<<"\nCOMPARE TESTS:\n";
     string_testCompare();
-    std::cout<<"\n";
+    std::cout<<"\nERASE TESTS:\n";
     string_testErase();
-    std::cout<<"\n";
+    std::cout<<"\nCOPY TESTS:\n";
     string_copy();
-    std::cout<<"\n";
+    std::cout<<"\nSUBSTR TESTS:\n";
     string_substr();
-    std::cout<<"\n";
+    std::cout<<"\nRESIZE TESTS:\n";
     string_resize();
-    std::cout<<"\n";
+    std::cout<<"\nCONSTRUCTORS DESTRUCTORS ASSIGN TESTS:\n";
     string_testConstructorDestructorsAssign();
-    std::cout<<"\n";
+    std::cout<<"\nFIND TESTS:\n";
     string_find();
+
+    std::cout<<"\nSTARTS WITH ENDS WITH TESTS:\n";
+    string_test_startsEndsWith();
     return 0;
 }
