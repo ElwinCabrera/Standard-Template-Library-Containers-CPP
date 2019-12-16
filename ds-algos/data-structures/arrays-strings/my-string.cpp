@@ -214,6 +214,7 @@ BasicString::BasicString(const BasicString &other): buffer(nullptr), bufferSize(
 BasicString::BasicString(BasicString &&other) noexcept{ 
     //Move constructor
     this->buffer = other.buffer;
+    this->bufferSize = other.size();
     other.buffer = nullptr;
 }
 BasicString::~BasicString() {
@@ -225,11 +226,20 @@ BasicString::~BasicString() {
     }
 }
 BasicString& BasicString::operator=(const BasicString &str){
+    if(&str == this) return *this;
     BasicString tmpStr(str);
     tmpStr.swap(*this);
     return *this;
 }
-BasicString& BasicString::operator=(BasicString &&other){ }
+BasicString& BasicString::operator=(BasicString &&other){ 
+    if(&other == this) return *this;
+    if(this->buffer) delete[] this->buffer;
+    this->bufferSize = other.size();
+    this->bufferCap = other.capacity();
+
+    other.~BasicString();
+    return *this;
+}
 
 void BasicString::assign(unsigned int count, const char c){
     resize(count);
