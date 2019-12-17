@@ -1,10 +1,11 @@
 #include <iostream>
-#include "forward_list.h"
+//#include "forward_list.h"
+#include "list.h"
 
 int main(int argc, char **argv){
 
-    Forward_List<int> f_list;
-    Forward_List<int> f_list2;
+    //Forward_List<int> f_list;
+    //Forward_List<int> f_list2;
     // for (int i = 9; i >=1; --i) f_list2.push_front(i);
     
     // f_list.push_front(0);
@@ -32,5 +33,16 @@ int main(int argc, char **argv){
     // std::cout << "After splice: " << f_list << '\n';
     // f_list.unique();
     // std::cout << "After unique(): " << f_list << '\n';
+
+    List<int> list1;
+    //List<int> list2(list1);
+    for(int i = 9; i >=1; --i) list1.push_back(i);
+    List<int> list2(list1);
+    list1.push_front(100);
+    std::cout << "The list holds: " << list1 << "\n";
+    std::cout << "The list2 holds: " << list2 << "\n";
+    //list1.remove(2);
+
+
     return 0;
 }

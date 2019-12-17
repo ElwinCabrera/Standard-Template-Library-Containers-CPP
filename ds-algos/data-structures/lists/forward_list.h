@@ -176,26 +176,26 @@ public:
     
     Forward_List(Forward_Iterator<Type> first, Forward_Iterator<Type> last)
     : first_node(new Node<Type>()), last_node(new Node<Type>()), size(0){
-        this->first_node->next_node = this->last_node;
         Node<Type> *node_ptr = this->first_node;
         while(first != last){
             Node<Type> *new_node = new Node<Type>(first->data);
             node_ptr->next_node = new_node;
             node_ptr = node_ptr->next_node;
             ++size;
+            ++first;
         }
         node_ptr->next_node = this->last_node;
     }
     
     Forward_List(const Forward_List &other)
-    : first_node(new Node<Type>()), last_node(new Node<Type>()), size(other.size()){
+    : first_node(new Node<Type>()), last_node(new Node<Type>()), size(other.size){
         Forward_List::iterator it (other.begin());
         Node<Type> *node_ptr = this->first_node;
         while (it != other.end()){
-            Node<Type> *new_node = new Node<Type>(*it);
+            Node<Type> *new_node = new Node<Type>(it->data);
             node_ptr->next_node = new_node;
             node_ptr = node_ptr->next_node;
-            it++;
+            ++it;
         }
         node_ptr->next_node = this->last_node;
     }
