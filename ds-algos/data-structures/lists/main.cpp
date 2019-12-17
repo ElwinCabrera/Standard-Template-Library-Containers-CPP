@@ -18,9 +18,11 @@ int main(int argc, char **argv){
     std::cout << "After resize up to 5: " << f_list << '\n';
     //f_list.resize(2);
     std::cout << "After resize down to 2: " << f_list << '\n';
-    f_list.remove(2);
+    //f_list.remove(2);
     std::cout << "After remove : " << f_list << '\n';
     f_list.reverse();
     std::cout << "After reverse: " << f_list << '\n';
+    f_list.sort();
+    std::cout << "After sort: " << f_list << '\n';
     return 0;
 }

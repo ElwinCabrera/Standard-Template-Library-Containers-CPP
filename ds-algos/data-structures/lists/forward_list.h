@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <climits>
 #include <math.h>
+#include <vector>
 
 template< class Type, class UnqualifiedType > class Forward_Iterator;
 template<class Type, class UnqualifiedType  > class Forward_List;
@@ -429,7 +430,15 @@ public:
         last_node = tmp;
     }
     unsigned unique();
-    void sort();
+    void sort(){
+        std::vector<Type> v(this->size);
+        iterator it = this->begin();
+        for(unsigned i =0; i < v.size() && it != this->end(); ++i) {v.at(i) = it->data; ++it;}
+        std::sort(v.begin(), v.end());
+        Node<Type> *node_ptr = this->first_node->next_node;
+        unsigned i = 0;
+        while(node_ptr != this->last_node && i < v.size()) {node_ptr->data = v.at(i++); node_ptr = node_ptr->next_node;} 
+    }
     // template< class Compare >
     // void sort( Compare comp );
 
