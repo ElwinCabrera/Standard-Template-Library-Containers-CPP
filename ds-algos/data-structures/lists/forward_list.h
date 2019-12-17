@@ -389,18 +389,53 @@ public:
     //void swap(Forward_List& other) noexcept;
 
     //operations
-    void merge(Forward_List<Type>& other);
-    void merge(Forward_List<Type>&& other);
+    void merge(Forward_List<Type>& other){
+        
+    }
+    void merge(Forward_List<Type>&& other){
+        Forward_List l(std::move(other));
+        merge(l);
+    }
     // template <class Compare>
     // void merge( forward_list& other, Compare comp );
     // template <class Compare>
     // void merge( forward_list&& other, Compare comp );
-    void splice_after(iterator pos, Forward_List<Type> &other);
-    void splice_after(iterator pos, Forward_List<Type> &&other);
-    void splice_after(iterator pos, Forward_List<Type> &other, iterator it);
-    void splice_after(iterator pos, Forward_List<Type> &&other, iterator it);
-    void splice_after(iterator pos, Forward_List<Type> &other, iterator first, iterator last);
-    void splice_after(iterator pos, Forward_List<Type> &&other, iterator first, iterator last);
+    void splice_after(iterator pos, Forward_List<Type> &other){
+        auto otherIt = other.begin();
+        while(otherIt != other.end()) {
+            insert_after(pos, otherIt->data);
+            ++pos;
+            ++otherIt;
+        }
+    }
+    void splice_after(iterator pos, Forward_List<Type> &&other){
+        Forward_List l(std::move(other));
+        splice_after(pos, l);
+    }
+    void splice_after(iterator pos, Forward_List<Type> &other, iterator it){
+        auto otherIt = it + 1;
+        while(otherIt != other.end()) {
+            insert_after(pos, otherIt->data);
+            ++pos;
+            ++otherIt;
+        }
+    }
+    void splice_after(iterator pos, Forward_List<Type> &&other, iterator it){
+        Forward_List l(std::move(other));
+        splice_after(pos, l, it);
+    }
+    void splice_after(iterator pos, Forward_List<Type> &other, iterator first, iterator last){
+        auto otherIt = first + 1;
+        while(otherIt != last) {
+            insert_after(pos, otherIt->data);
+            ++pos;
+            ++otherIt;
+        }
+    }
+    void splice_after(iterator pos, Forward_List<Type> &&other, iterator first, iterator last){
+        Forward_List l(std::move(other));
+        splice_after(pos, l, first, last);
+    }
 
     unsigned remove(const UnqualifiedType & value){
         unsigned count = 0;
