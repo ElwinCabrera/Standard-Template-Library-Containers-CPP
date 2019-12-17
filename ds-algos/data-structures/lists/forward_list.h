@@ -390,6 +390,30 @@ public:
 
     //operations
     void merge(Forward_List<Type>& other){
+        Node<Type> *node_ptr = this->first_node;
+        Node<Type> *other_node_ptr = *(other.before_begin());
+        
+        while (node_ptr->next_node != this->last_node && 
+              other_node_ptr->next_node != *(other.end())){
+            
+            if(other_node_ptr->next_node->data <= node_ptr->next_node->data){
+                Node<Type> *other_target = other_node_ptr->next_node;
+                Node<Type> *other_target_next =  other_target->next_node;
+                other_node_ptr->next_node = other_target_next;
+
+                Node<Type> *this_insert_next = node_ptr->next_node;
+                node_ptr->next_node = other_target;
+                other_target->next_node = this_insert_next; 
+            } 
+            node_ptr = node_ptr->next_node;
+        }
+        if(other_node_ptr->next_node != *(other.end())) {
+            node_ptr->next_node =  other_node_ptr->next_node;
+            other_node_ptr->next_node = this->last_node;
+            this->last_node = *(other.end()); 
+        }
+
+        
         
     }
     void merge(Forward_List<Type>&& other){
@@ -464,7 +488,13 @@ public:
         this->first_node =  last_node;
         last_node = tmp;
     }
-    unsigned unique();
+    unsigned unique(){
+        Node<Type> *node_ptr = *(this->begin());
+        while(node_ptr->next_node != this->last_node){
+            if(node_ptr->next_node->data == node_ptr->data) erase_after(iterator(node_ptr));
+            node_ptr = node_ptr->next_node;
+        }
+    }
     void sort(){
         std::vector<Type> v(this->size);
         iterator it = this->begin();
@@ -491,10 +521,6 @@ public:
         while(it1++ != l1.end() && it2++ != l2.end()) if(it1->data != it2->data) return true;
         return false;
     }
-    friend bool operator<(const Forward_List<Type> &l1, const Forward_List<Type> &l2) {}
-    friend bool operator<=(const Forward_List<Type> &l1, const Forward_List<Type> &l2) {}
-    friend bool operator>(const Forward_List<Type> &l1, const Forward_List<Type> &l2) {}
-    friend bool operator>=(const Forward_List<Type> &l1, const Forward_List<Type> &l2) {}
     //friend Forward_List<Type> operator+(const Forward_List<Type> &l1, const Forward_List<Type> &l2) {}
 
     
@@ -510,7 +536,6 @@ public:
         return os << ']';
     }
     friend std::istream& operator>>(std::istream &is, const Forward_List<Type> &l) {}
-
 
 
 
