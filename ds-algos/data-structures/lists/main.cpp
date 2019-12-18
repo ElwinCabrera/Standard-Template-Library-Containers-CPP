@@ -40,8 +40,17 @@ int main(int argc, char **argv){
     List<int> list2(list1);
     list1.push_front(100);
     std::cout << "The list holds: " << list1 << "\n";
-    std::cout << "The list2 holds: " << list2 << "\n";
-    //list1.remove(2);
+    list1.erase(list1.begin()+4);
+    list1.insert(list1.begin()+4,5);
+    std::cout << "The list after insert: " << list1 << "\n";
+    list1.erase(list1.begin()+4, list1.begin()+7);
+    std::cout << "The list after erase: " << list1 << "\n";
+    list1.pop_back();
+    std::cout << "The list after pop_back: " << list1 << "\n";
+    list1.pop_front();
+    std::cout << "The list after pop_back: " << list1 << "\n";
+    list1.sort();
+    std::cout << "The list after sort: " << list1 << "\n";
 
 
     return 0;

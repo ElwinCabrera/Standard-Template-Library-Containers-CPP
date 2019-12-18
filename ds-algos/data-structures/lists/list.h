@@ -299,31 +299,25 @@ public:
     }
     iterator insert(const_iterator pos, unsigned count, const UnqualifiedType &value){
         if(count == 0 || *pos == this->first_node) return pos;
-        bool first = true;
-        iterator it ;
-        for(const_iterator it = pos; it != pos + count; ++it) {
-            if(first) {
-                it = insert(it, value);
-                first = false;
-            } else insert(it, value);
-        }
-
-        return it;
+        iterator saveStart = pos-1;
+        iterator it = pos;
+        for(unsigned i = 0; i < count; ++i) it = insert(it, value);
+        return saveStart+1;
     }
 
-    template<class InputIt>
-    iterator insert(const_iterator pos, InputIt first, InputIt last);
+    //template<class InputIt>
+    //iterator insert(const_iterator pos, InputIt first, InputIt last);
     // template< class... Args >
     // iterator emplace_after( const_iterator pos, Args&&... args );
     iterator erase(const_iterator pos){
-        if(pos == this->end() || *pos = this->first_node || *pos == nullptr) return this->end();
-        Node<Type> *trash = *pos;
+        if(pos == this->end() || *pos == this->first_node || *pos == nullptr) return this->end();
+        Node<Type> *trash = *(iterator(pos));
         Node<Type> *next_to_trash = trash->next_node;
         Node<Type> *prev_to_trash = trash->prev_node;
         prev_to_trash->next_node = next_to_trash;
         next_to_trash->prev_node = prev_to_trash;
         if(trash) {
-            delete *trash;
+            delete trash;
             trash = nullptr;
             --this->size;
         }
@@ -362,7 +356,7 @@ public:
     void pop_back(){
         Node<Type> *trash = this->last_node->prev_node;
         if(trash != this->first_node){
-            trash->next_node = this->last_node;
+            trash->prev_node->next_node = this->last_node;
             this->last_node->prev_node = trash->prev_node;
             delete trash;
             trash = nullptr;
@@ -432,7 +426,6 @@ public:
         swap(this->size, other.size);
         swap(this->first_node, other.first_node);
     }
-    //void swap(List& other) noexcept;
 
     //operations
     void merge(List<Type>& other){

@@ -269,7 +269,6 @@ public:
     }
     iterator insert_after(const_iterator pos, const UnqualifiedType &value) {
         iterator p = pos;
-        iterator next = pos + 1;
         Node<Type> *node = new Node<Type>(value);
         if(next != this->end()){
             p->next_node = node;
@@ -279,14 +278,18 @@ public:
             node->next_node = last_node;
         }
         ++this->size;
-        return next;
+        return pos+1;
     }
     iterator insert_after(const_iterator pos, const UnqualifiedType &&value){
         const UnqualifiedType v = std::move(value);
         return insert_after(pos, v);
     }
     iterator insert_after(const_iterator pos, unsigned count, const UnqualifiedType &value){
-        for(const_iterator it = pos; it != pos + count; ++it) insert_after(it, value);
+        if(count == 0 || *pos == this->first_node) return pos;
+        iterator saveStart = pos-1;
+        iterator it = pos;
+        for(unsigned i = 0; i < count; ++i) it = insert_after(it, value);
+        return saveStart+1;
     }
 
     template<class InputIt>
