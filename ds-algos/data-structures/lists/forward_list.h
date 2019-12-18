@@ -389,7 +389,6 @@ public:
         swap(this->size, other.size);
         swap(this->first_node, other.first_node);
     }
-    //void swap(Forward_List& other) noexcept;
 
     //operations
     void merge(Forward_List<Type>& other){
@@ -492,11 +491,14 @@ public:
         last_node = tmp;
     }
     unsigned unique(){
+        unsigned count = 0;
         Node<Type> *node_ptr = *(this->begin());
         while(node_ptr->next_node != this->last_node){
-            if(node_ptr->next_node->data == node_ptr->data) erase_after(iterator(node_ptr));
+            if(node_ptr->next_node->data == node_ptr->data) {erase_after(iterator(node_ptr)) ++count;}
             node_ptr = node_ptr->next_node;
         }
+        this->size -= count;
+        return count;
     }
     void sort(){
         std::vector<Type> v(this->size);
@@ -524,7 +526,6 @@ public:
         while(it1++ != l1.end() && it2++ != l2.end()) if(it1->data != it2->data) return true;
         return false;
     }
-    //friend Forward_List<Type> operator+(const Forward_List<Type> &l1, const Forward_List<Type> &l2) {}
 
     
     friend std::ostream& operator<<(std::ostream &os, const Forward_List<Type> &l) {

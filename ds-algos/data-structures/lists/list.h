@@ -148,13 +148,13 @@ public:
     typedef const  Bidir_Iterator<UnqualifiedType> const_iterator;
     
     List()
-    : first_node(new Node<Type>()), last_node(new Node<Type>()) ,size(0) {
+    : first_node(new Node<Type>()), last_node(new Node<Type>()) ,listSize(0) {
         this->first_node->next_node = this->last_node;
         this->last_node->prev_node = this->first_node;
     }
 
     List(unsigned count, const UnqualifiedType & value)
-    : first_node(new Node<Type>()), last_node(new Node<Type>()), size(count){
+    : first_node(new Node<Type>()), last_node(new Node<Type>()), listSize(count){
         Node<Type> *node_ptr = this->first_node;
         while(count ) {
             Node<Type> *new_node = new Node<Type>(value);
@@ -168,7 +168,7 @@ public:
     }
 
     List(unsigned count)
-    : first_node(new Node<Type>()), last_node(new Node<Type>()), size(count) {
+    : first_node(new Node<Type>()), last_node(new Node<Type>()), listSize(count) {
         Node<Type> *node_ptr = this->first_node;
         while(count ) {
             Node<Type> *new_node = new Node<Type>();
@@ -183,14 +183,14 @@ public:
 
     
     List(Bidir_Iterator<Type> first, Bidir_Iterator<Type> last)
-    : first_node(new Node<Type>()), last_node(new Node<Type>()), size(0){
+    : first_node(new Node<Type>()), last_node(new Node<Type>()), listSize(0){
         Node<Type> *node_ptr = this->first_node;
         while(first != last){
             Node<Type> *new_node = new Node<Type>(first->data);
             node_ptr->next_node = new_node;
             new_node->prev_node = node_ptr;
             node_ptr = node_ptr->next_node;
-            ++size;
+            ++listSize;
             ++first;
         }
         node_ptr->next_node = this->last_node;
@@ -198,7 +198,7 @@ public:
     }
     
     List(const List &other)
-    : first_node(new Node<Type>()), last_node(new Node<Type>()), size(other.size){
+    : first_node(new Node<Type>()), last_node(new Node<Type>()), listSize(other.size()){
         List::iterator it (other.begin());
         Node<Type> *node_ptr = this->first_node;
         while (it != other.end()){
@@ -212,7 +212,7 @@ public:
         this->last_node->prev_node = node_ptr;
     }
     List(const List &&other)
-    : size(other.size()){
+    : listSize(other.size()){
         this->first_node = other.first_node;
         other.first_node = nullptr;
     }
@@ -260,13 +260,15 @@ public:
     const_iterator cend() const noexcept{return const_iterator(last_node);}
     
     //capacity
-    unsigned empty() const {return size == 0;}
-    //unsigned size() const {return this->size;}
+    unsigned empty() const {return listSize == 0;}
+    unsigned size() const {return this->listSize;}
     unsigned max_size() const {return UINT_MAX;}
 
     // modifiers
     void clear() noexcept{
+        
         if(this->first_node){
+            if(this->first_node->next_node = this->last_node) return;
             Node<Type> *node_ptr = this->first_node;
             
             while(node_ptr ) {
@@ -276,7 +278,7 @@ public:
                 trash = nullptr;
             }
         }
-        this->size = 0;
+        this->listSize = 0;
         first_node = new Node<Type>();
         last_node = new Node<Type>();
         this->first_node->next_node = this->last_node;
@@ -290,7 +292,7 @@ public:
         new_node->prev_node = prev_insert_node;
         new_node->next_node = *iterator(pos);
         iterator(pos)->prev_node = new_node; 
-        ++this->size;
+        ++this->listSize;
         return iterator(new_node);
     }
     iterator insert(const_iterator pos, const UnqualifiedType &&value){
@@ -319,7 +321,7 @@ public:
         if(trash) {
             delete trash;
             trash = nullptr;
-            --this->size;
+            --this->listSize;
         }
         return iterator(next_to_trash);
     }
@@ -334,7 +336,7 @@ public:
             trash_begin = trash_begin->next_node;
             delete trash;
             trash = nullptr;
-            --this->size;
+            --this->listSize;
         }
         return last;
     }
@@ -346,7 +348,7 @@ public:
         new_node->prev_node = prev_last;
         new_node->next_node = this->last_node;
         this->last_node->prev_node = new_node;
-        ++this->size;
+        ++this->listSize;
     }
     void push_back(UnqualifiedType &&value){
         UnqualifiedType v= std::move(value);
@@ -360,7 +362,7 @@ public:
             this->last_node->prev_node = trash->prev_node;
             delete trash;
             trash = nullptr;
-            --this->size;
+            --this->listSize;
         }
     }
     
@@ -370,7 +372,7 @@ public:
         node->next_node = this->first_node->next_node;
         node->prev_node = this->first_node;
         this->first_node->next_node = node;
-        ++this->size;
+        ++this->listSize;
     }
 
     void push_front(UnqualifiedType && value){
@@ -389,68 +391,71 @@ public:
             this->first_node->next_node->prev_node = trash->prev_node;
             delete trash;
             trash = nullptr;
-            --this->size;
+            --this->listSize;
         }
     }
     void resize(unsigned count) {
         
         
         unsigned c = 0;
-        if(count > this->size){
-            c = count - this->size;
+        if(count > this->listSize){
+            c = count - this->listSize;
             while(c--) this->insert(this->end(),0);
-        } else if (count < this->size){
+        } else if (count < this->listSize){
             c = count;
             iterator it = this->begin();
             while(c--) ++it;
             this->erase(it, this->end());
         }
-        this->size = count;
+        this->listSize = count;
     }
     void resize(unsigned count, const UnqualifiedType & value){
         
         unsigned c = 0;
-        if(count > this->size){
-            c = count - this->size;
+        if(count > this->listSize){
+            c = count - this->listSize;
             while(c--) this->insert(this->end(),value);
-        } else if (count < this->size){
+        } else if (count < this->listSize){
             c = count;
             iterator it = this->begin();
             while(c--) ++it;
             this->erase(it, this->end());
         }
-        this->size = count;
+        this->listSize = count;
     }
     void swap(List<Type>& other) noexcept{
         using std::swap;
-        swap(this->size, other.size);
+        swap(this->listSize, other.listSize);
         swap(this->first_node, other.first_node);
     }
 
     //operations
     void merge(List<Type>& other){
-        Node<Type> *node_ptr = this->first_node;
-        Node<Type> *other_node_ptr = *(other.before_begin());
+        if(other.empty() || other == *this) return;
+        Node<Type> *node_ptr = *(this->begin());
+        Node<Type> *other_node_ptr = *(other.begin());
         
-        while (node_ptr->next_node != this->last_node && 
-              other_node_ptr->next_node != *(other.end())){
+        while (node_ptr != this->last_node && 
+              other_node_ptr != *(other.end())){
             
-            if(other_node_ptr->next_node->data <= node_ptr->next_node->data){
-                Node<Type> *other_target = other_node_ptr->next_node;
-                Node<Type> *other_target_next =  other_target->next_node;
-                other_node_ptr->next_node = other_target_next;
+            if(other_node_ptr->data <= node_ptr->data){
+                Node<Type> *other_target_prev =  other_node_ptr->prev_node;
+                other_target_prev->next_node = other_node_ptr->next_node;
+                other_node_ptr->next_node->prev_node = other_target_prev;
 
-                Node<Type> *this_insert_next = node_ptr->next_node;
-                node_ptr->next_node = other_target;
-                other_target->next_node = this_insert_next; 
+                Node<Type> *this_insert_prev = node_ptr->prev_node;
+                this_insert_prev->next_node = other_node_ptr;
+                other_node_ptr->prev_node = this_insert_prev;
+                other_node_ptr->next_node = node_ptr; 
+
             } 
             node_ptr = node_ptr->next_node;
         }
-        if(other_node_ptr->next_node != *(other.end())) {
-            node_ptr->next_node =  other_node_ptr->next_node;
-            other_node_ptr->next_node = this->last_node;
-            this->last_node = *(other.end()); 
-        }
+        // if(other_node_ptr != *(other.end())) {
+        //     node_ptr->next_node =  other_node_ptr->next_node;
+        //     other_node_ptr->next_node = this->last_node;
+        //     this->last_node = *(other.end()); 
+        // }
 
         
         
@@ -463,52 +468,87 @@ public:
     // void merge( List& other, Compare comp );
     // template <class Compare>
     // void merge( List&& other, Compare comp );
-    void splice_after(iterator pos, List<Type> &other){
-        auto otherIt = other.begin();
-        while(otherIt != other.end()) {
-            insert_after(pos, otherIt->data);
-            ++pos;
-            ++otherIt;
-        }
+    void splice(iterator pos, List<Type> &other){
+        if(other.empty() || other == *this) return;
+        Node<Type> *right_end = *pos;
+        Node<Type> *left_end = *(pos-1);
+        Node<Type> *other_begin = *(other.begin());
+        Node<Type> *other_before_end = *(other.end()-1);
+        Node<Type> *other_before_begin = other_begin->prev_node;
+
+        other_before_begin->next_node = *(other.end());
+        (other.end())->prev_node = other_before_begin;
+
+        left_end->next_node = other_begin;
+        other_begin->prev_node = left_end;
+        other_before_end->next_node = right_end;
+        right_end->prev_node = other_before_end;
+        this->listSize += other.size();
+        
     }
-    void splice_after(iterator pos, List<Type> &&other){
+    void splice(iterator pos, List<Type> &&other){
         List l(std::move(other));
-        splice_after(pos, l);
+        splice(pos, l);
     }
-    void splice_after(iterator pos, List<Type> &other, iterator it){
-        auto otherIt = it + 1;
-        while(otherIt != other.end()) {
-            insert_after(pos, otherIt->data);
-            ++pos;
-            ++otherIt;
-        }
+    void splice(iterator pos, List<Type> &other, iterator it){
+        if(other.empty() || other == *this) return;
+        Node<Type> *right_end = *pos;
+        Node<Type> *left_end = *(pos-1);
+        Node<Type> *other_begin = *(it);
+        Node<Type> *other_before_end = *(other.end()-1);
+        Node<Type> *other_before_begin = other_begin->prev_node;
+
+        other_before_begin->next_node = *(other.end());
+        (other.end())->prev_node = other_before_begin;
+
+        left_end->next_node = other_begin;
+        other_begin->prev_node = left_end;
+        other_before_end->next_node = right_end;
+        right_end->prev_node = other_before_end;
+
+        //have to get the correct size that we split
+        //could be done by iterating the other list staring from it until end but that would be linear time
+        //just for the size, then again we need to have the correct size
+        //this->listSize += other.size();
     }
-    void splice_after(iterator pos, List<Type> &&other, iterator it){
+    void splice(iterator pos, List<Type> &&other, iterator it){
         List l(std::move(other));
-        splice_after(pos, l, it);
+        splice(pos, l, it);
     }
-    void splice_after(iterator pos, List<Type> &other, iterator first, iterator last){
-        auto otherIt = first + 1;
-        while(otherIt != last) {
-            insert_after(pos, otherIt->data);
-            ++pos;
-            ++otherIt;
-        }
+    void splice(iterator pos, List<Type> &other, iterator first, iterator last){
+        if(other.empty() || other == *this) return;
+        Node<Type> *right_end = *pos;
+        Node<Type> *left_end = *(pos-1);
+        Node<Type> *other_begin = *(first);
+        Node<Type> *other_before_end = *(last-1);
+        Node<Type> *other_before_begin = other_begin->prev_node;
+
+        other_before_begin->next_node = *(last);
+        (last)->prev_node = other_before_begin;
+
+        left_end->next_node = other_begin;
+        other_begin->prev_node = left_end;
+        other_before_end->next_node = right_end;
+        right_end->prev_node = other_before_end;
+
+        //have to get the correct size that we split
+        //could be done by iterating the other list staring from it until end but that would be linear time
+        //just for the size, then again we need to have the correct size
+        //this->listSize += other.size();
     }
-    void splice_after(iterator pos, List<Type> &&other, iterator first, iterator last){
+    void splice(iterator pos, List<Type> &&other, iterator first, iterator last){
         List l(std::move(other));
-        splice_after(pos, l, first, last);
+        splice(pos, l, first, last);
     }
 
     unsigned remove(const UnqualifiedType & value){
         unsigned count = 0;
-        if((this->before_begin() +1)->data == value && (this->before_begin() +1) != this->end()) { erase_after(this->before_begin()); ++count; }
-        iterator it = this->begin();
-        while(it +1  != this->end()){
-            if((it+1)->data == value){ erase_after(it); ++count; }
-            else ++it; 
+        Node<Type> *node_ptr = *(this->begin()); 
+        while( node_ptr != this->last_node){
+            if(node_ptr->data == value){ erase(iterator(node_ptr)); ++count; }
+            node_ptr = node_ptr->next_node;
         }
-        this->size -= count;
+        this->listSize -= count;
         return count;
     }
     void reverse() noexcept{
@@ -518,6 +558,7 @@ public:
 
         while(begin ){
             begin->next_node = before_begin;
+            begin->prev_node = after_begin;
             before_begin = begin;
             begin = after_begin;
 
@@ -528,14 +569,18 @@ public:
         last_node = tmp;
     }
     unsigned unique(){
+        unsigned count =0;
         Node<Type> *node_ptr = *(this->begin());
-        while(node_ptr->next_node != this->last_node){
-            if(node_ptr->next_node->data == node_ptr->data) erase_after(iterator(node_ptr));
+        
+        while(node_ptr != this->last_node){
+            if(node_ptr->next_node->data == node_ptr->data) { erase(iterator(node_ptr->next_node)); ++count; }
             node_ptr = node_ptr->next_node;
         }
+        this->listSize -= count;
+        return count;
     }
     void sort(){
-        std::vector<Type> v(this->size);
+        std::vector<Type> v(this->listSize);
         iterator it = this->begin();
         for(unsigned i =0; i < v.size() && it != this->end(); ++i) {v.at(i) = it->data; ++it;}
         std::sort(v.begin(), v.end());
@@ -560,7 +605,6 @@ public:
         while(it1++ != l1.end() && it2++ != l2.end()) if(it1->data != it2->data) return true;
         return false;
     }
-    //friend List<Type> operator+(const List<Type> &l1, const List<Type> &l2) {}
 
     
     friend std::ostream& operator<<(std::ostream &os, const List<Type> &l) {
@@ -582,7 +626,7 @@ public:
 protected:
     Node<Type> *first_node;
     Node<Type> *last_node;
-    unsigned size;
+    unsigned listSize;
     
 };
 
