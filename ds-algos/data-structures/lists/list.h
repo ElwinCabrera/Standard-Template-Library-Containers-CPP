@@ -447,7 +447,6 @@ public:
                 this_insert_prev->next_node = other_node_ptr;
                 other_node_ptr->prev_node = this_insert_prev;
                 other_node_ptr->next_node = node_ptr; 
-
             } 
             node_ptr = node_ptr->next_node;
         }
